@@ -1,0 +1,92 @@
+<div class="flex h-screen bg-gray-100">
+
+    <button 
+      (click)="toggleSidebar()" 
+      class="lg:hidden fixed top-4 left-4 z-20 p-2 rounded-md bg-indigo-600 text-white"
+    >
+      <fa-icon [icon]="isSidebarOpen ? faTimes : faBars"></fa-icon>
+    </button>
+
+  
+    <div 
+      [class.translate-x-0]="isSidebarOpen"
+      [class.-translate-x-full]="!isSidebarOpen"
+      class="fixed lg:static lg:translate-x-0 z-10 w-64 h-full bg-indigo-800 text-white transition-transform duration-300 ease-in-out"
+    >
+      <div class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-semibold">Admin Dashboard</h1>
+        <button 
+          (click)="toggleSidebar()" 
+          class="lg:hidden p-2 rounded-md hover:bg-indigo-700"
+        >
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
+      </div>
+      <nav class="mt-4">
+        <a 
+          routerLink="/dashboard" 
+          routerLinkActive="bg-indigo-900" 
+          [routerLinkActiveOptions]="{exact: true}"
+          class="flex items-center px-4 py-2 hover:bg-indigo-700"
+          (click)="closeSidebarOnMobile()"
+        >
+          <fa-icon [icon]="faHome" class="mr-3"></fa-icon>
+          <span>Overview</span>
+        </a>
+        <a 
+          routerLink="/dashboard/courses" 
+          routerLinkActive="bg-indigo-900"
+          class="flex items-center px-4 py-2 hover:bg-indigo-700"
+          (click)="closeSidebarOnMobile()"
+        >
+          <fa-icon [icon]="faBook" class="mr-3"></fa-icon>
+          <span>Courses</span>
+        </a>
+        <a 
+          routerLink="/dashboard/users" 
+          routerLinkActive="bg-indigo-900"
+          class="flex items-center px-4 py-2 hover:bg-indigo-700"
+          (click)="closeSidebarOnMobile()"
+        >
+          <fa-icon [icon]="faUsers" class="mr-3"></fa-icon>
+          <span>Users</span>
+        </a>
+        <a 
+          routerLink="/dashboard/settings" 
+          routerLinkActive="bg-indigo-900"
+          class="flex items-center px-4 py-2 hover:bg-indigo-700"
+          (click)="closeSidebarOnMobile()"
+        >
+          <fa-icon [icon]="faCog" class="mr-3"></fa-icon>
+          <span>Settings</span>
+        </a>
+        <button 
+          (click)="logout()" 
+          class="flex items-center w-full text-left px-4 py-2 hover:bg-indigo-700"
+        >
+          <fa-icon [icon]="faSignOutAlt" class="mr-3"></fa-icon>
+          <span>Logout</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto">
+      <header class="bg-white shadow">
+        <div class="px-4 py-6 flex items-center">
+          <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+        </div>
+      </header>
+
+      <main class="p-6">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+
+    
+    <div 
+      *ngIf="isSidebarOpen" 
+      (click)="toggleSidebar()"
+      class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-0"
+    ></div>
+  </div>
