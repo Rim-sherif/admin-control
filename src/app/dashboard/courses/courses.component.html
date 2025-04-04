@@ -1,27 +1,101 @@
 <div class="space-y-6">
-    <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-gray-900">Courses</h2>
-      <button class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-gray-900">Courses Management</h2>
+    <div class="flex space-x-4">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        placeholder="Search courses..."
+        class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#410445]"
+      >
+      <button class="px-4 py-2 bg-[#410445] text-white rounded-md hover:bg-[#8c2f94] text-sm">
         Add New Course
       </button>
     </div>
+  </div>
 
-    <!-- Course List -->
-    <div class="bg-white shadow overflow-hidden sm:rounded-md">
-      <ul class="divide-y divide-gray-200">
-        <li class="px-6 py-4 hover:bg-gray-50">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-medium text-gray-900">Angular Masterclass</h3>
-              <p class="text-sm text-gray-500">Learn Angular from scratch to advanced</p>
-            </div>
-            <div class="flex space-x-2">
-              <button class="px-3 py-1 text-sm text-indigo-600 hover:text-indigo-900">Edit</button>
-              <button class="px-3 py-1 text-sm text-red-600 hover:text-red-900">Delete</button>
+  <div class="border-b border-gray-200">
+    <nav class="-mb-px flex space-x-8">
+      <button 
+        (click)="activeTab = 'published'"
+        [class]="activeTab === 'published' ? 'border-[#410445] text-[#410445] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'"
+      >
+        Published Courses
+      </button>
+      <button 
+        (click)="activeTab = 'requests'"
+        [class]="activeTab === 'requests' ? 'border-[#410445] text-[#410445] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'"
+      >
+        Pending Requests
+        <span *ngIf="courseRequests.length > 0" class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+          {{ courseRequests.length }}
+        </span>
+      </button>
+    </nav>
+  </div>
+
+  <div *ngIf="activeTab === 'published'" class="bg-white shadow overflow-hidden sm:rounded-md">
+    <ul class="divide-y divide-gray-200">
+      <li *ngFor="let course of filteredPublishedCourses()" class="px-6 py-4 hover:bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">{{ course.title }}</h3>
+            <p class="text-sm text-gray-500">{{ course.description }}</p>
+            <div class="mt-1 flex items-center text-sm text-gray-500">
+              <span>Instructor: {{ course.instructor }}</span>
+              <span class="mx-1">•</span>
+              <span>Published: {{ course.createdAt | date }}</span>
             </div>
           </div>
-        </li>
-        <!-- Add more course items here -->
-      </ul>
-    </div>
+          <div class="flex space-x-2">
+            <button class="px-3 py-1 text-sm text-[#410445] hover:text-indigo-900">Edit</button>
+            <button 
+              (click)="deleteCourse(course.id)"
+              class="px-3 py-1 text-sm text-red-600 hover:text-red-900"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </li>
+      <li *ngIf="filteredPublishedCourses().length === 0" class="px-6 py-4 text-center text-gray-500">
+        No published courses found
+      </li>
+    </ul>
   </div>
+
+  <div *ngIf="activeTab === 'requests'" class="bg-white shadow overflow-hidden sm:rounded-md">
+    <ul class="divide-y divide-gray-200">
+      <li *ngFor="let course of filteredCourseRequests()" class="px-6 py-4 hover:bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">{{ course.title }}</h3>
+            <p class="text-sm text-gray-500">{{ course.description }}</p>
+            <div class="mt-1 flex items-center text-sm text-gray-500">
+              <span>Instructor: {{ course.instructor }}</span>
+              <span class="mx-1">•</span>
+              <span>Requested: {{ course.createdAt | date }}</span>
+            </div>
+          </div>
+          <div class="flex space-x-2">
+            <button 
+              (click)="approveCourse(course.id)"
+              class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Approve
+            </button>
+            <button 
+              (click)="rejectCourse(course.id)"
+              class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Reject
+            </button>
+          </div>
+        </div>
+      </li>
+      <li *ngIf="filteredCourseRequests().length === 0" class="px-6 py-4 text-center text-gray-500">
+        No pending course requests
+      </li>
+    </ul>
+  </div>
+</div>

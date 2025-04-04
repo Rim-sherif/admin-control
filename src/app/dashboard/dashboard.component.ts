@@ -4,11 +4,16 @@ import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBars,
+  faBell,
   faBook,
+  faChartLine,
   faCog,
   faHome,
+  faShieldAlt,
   faSignOutAlt,
+  faTasks,
   faTimes,
+  faUser,
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../services/auth.service';
@@ -28,6 +33,11 @@ export class DashboardComponent {
   faUsers = faUsers;
   faCog = faCog;
   faSignOutAlt = faSignOutAlt;
+  faShieldAlt = faShieldAlt;
+  faBell = faBell;
+  faUser = faUser;
+  faChartLine = faChartLine;
+  faTasks = faTasks;
 
   isSidebarOpen = false;
 
