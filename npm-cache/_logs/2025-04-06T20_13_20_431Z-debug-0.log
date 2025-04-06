@@ -1,0 +1,98 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@10.7.0
+2 info using node@v20.14.0
+3 silly config:load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config:load:file:E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control\.npmrc
+5 silly config:load:file:C:\Users\MOON\.npmrc
+6 silly config:load:file:C:\Users\MOON\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm install @angular/material@19.2.8
+8 verbose argv "install" "@angular/material@19.2.8"
+9 verbose logfile logs-max:10 dir:E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control\npm-cache\_logs\2025-04-06T20_13_20_431Z-
+10 verbose logfile E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control\npm-cache\_logs\2025-04-06T20_13_20_431Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly idealTree buildDeps
+13 silly fetch manifest @angular/material@19.2.8
+14 http fetch GET 200 https://registry.npmjs.org/@angular%2fmaterial 1154ms (cache miss)
+15 silly fetch manifest @angular/cdk@19.2.8
+16 http fetch GET 200 https://registry.npmjs.org/@angular%2fcdk 306ms (cache miss)
+17 silly fetch manifest @angular/common@^19.2.0
+18 http fetch GET 200 https://registry.npmjs.org/@angular%2fcommon 371ms (cache updated)
+19 silly fetch manifest @angular/core@^19.2.0
+20 http fetch GET 200 https://registry.npmjs.org/@angular%2fcore 372ms (cache updated)
+21 silly fetch manifest rxjs@~7.8.0
+22 http fetch GET 200 https://registry.npmjs.org/rxjs 168ms (cache updated)
+23 silly fetch manifest zone.js@~0.15.0
+24 http fetch GET 200 https://registry.npmjs.org/zone.js 148ms (cache updated)
+25 silly fetch manifest @angular/forms@^19.2.0
+26 http fetch GET 200 https://registry.npmjs.org/@angular%2fforms 370ms (cache miss)
+27 silly fetch manifest @angular/platform-browser@^19.2.0
+28 http fetch GET 200 https://registry.npmjs.org/@angular%2fplatform-browser 367ms (cache miss)
+29 silly fetch manifest @angular/animations@^19.2.5
+30 http fetch GET 200 https://registry.npmjs.org/@angular%2fanimations 362ms (cache updated)
+31 silly placeDep ROOT @angular/material@19.2.8 OK for: admin-control@0.0.0 want: 19.2.8
+32 silly placeDep ROOT @angular/cdk@19.2.8 OK for: @angular/material@19.2.8 want: 19.2.8
+33 silly fetch manifest @angular/common@19.2.5
+34 silly fetch manifest @angular/core@19.2.5
+35 silly fetch manifest rxjs@^6.5.3 || ^7.4.0
+36 verbose stack Error: could not resolve
+36 verbose stack     at PlaceDep.failPeerConflict (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:503:25)
+36 verbose stack     at new PlaceDep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\place-dep.js:157:21)
+36 verbose stack     at #buildDepStep (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:939:18)
+36 verbose stack     at async Arborist.buildIdealTree (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\build-ideal-tree.js:203:7)
+36 verbose stack     at async Promise.all (index 1)
+36 verbose stack     at async Arborist.reify (C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\arborist\lib\arborist\reify.js:131:5)
+36 verbose stack     at async Install.exec (C:\Program Files\nodejs\node_modules\npm\lib\commands\install.js:150:5)
+36 verbose stack     at async module.exports (C:\Program Files\nodejs\node_modules\npm\lib\cli\entry.js:74:5)
+37 verbose cwd E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control
+38 verbose Windows_NT 10.0.19045
+39 verbose node v20.14.0
+40 verbose npm  v10.7.0
+41 error code ERESOLVE
+42 error ERESOLVE could not resolve
+43 error
+44 error While resolving: @angular/animations@19.2.5
+44 error Found: @angular/common@19.2.4
+44 error node_modules/@angular/common
+44 error   peer @angular/common@"19.2.4" from @angular/forms@19.2.4
+44 error   node_modules/@angular/forms
+44 error     @angular/forms@"^19.2.0" from the root project
+44 error     peer @angular/forms@"^19.0.0 || ^20.0.0" from @angular/material@19.2.8
+44 error     node_modules/@angular/material
+44 error       @angular/material@"19.2.8" from the root project
+44 error   peer @angular/common@"19.2.4" from @angular/platform-browser@19.2.4
+44 error   node_modules/@angular/platform-browser
+44 error     peer @angular/platform-browser@"19.2.4" from @angular/forms@19.2.4
+44 error     node_modules/@angular/forms
+44 error       @angular/forms@"^19.2.0" from the root project
+44 error       1 more (@angular/material)
+44 error     peer @angular/platform-browser@"19.2.4" from @angular/platform-browser-dynamic@19.2.4
+44 error     node_modules/@angular/platform-browser-dynamic
+44 error       @angular/platform-browser-dynamic@"^19.2.0" from the root project
+44 error     3 more (@angular/router, the root project, @angular/material)
+44 error   5 more (@angular/platform-browser-dynamic, @angular/router, ...)
+44 error
+44 error Could not resolve dependency:
+44 error peer @angular/common@"19.2.5" from @angular/animations@19.2.5
+44 error node_modules/@angular/animations
+44 error   @angular/animations@"^19.2.5" from the root project
+44 error
+44 error Conflicting peer dependency: @angular/common@19.2.5
+44 error node_modules/@angular/common
+44 error   peer @angular/common@"19.2.5" from @angular/animations@19.2.5
+44 error   node_modules/@angular/animations
+44 error     @angular/animations@"^19.2.5" from the root project
+44 error
+44 error Fix the upstream dependency conflict, or retry
+44 error this command with --force or --legacy-peer-deps
+44 error to accept an incorrect (and potentially broken) dependency resolution.
+45 error
+45 error
+45 error For a full report see:
+45 error E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control\npm-cache\_logs\2025-04-06T20_13_20_431Z-eresolve-report.txt
+46 verbose exit 1
+47 verbose code 1
+48 silly unfinished npm timer reify 1743970401416
+49 silly unfinished npm timer reify:loadTrees 1743970401421
+50 silly unfinished npm timer idealTree:buildDeps 1743970402107
+51 silly unfinished npm timer idealTree:node_modules/@angular/animations 1743970406120
+52 error A complete log of this run can be found in: E:\Programming\ITI\FINAL PROJECT\courses-app-angular\admin-control\npm-cache\_logs\2025-04-06T20_13_20_431Z-debug-0.log

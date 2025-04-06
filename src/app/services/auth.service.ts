@@ -1,6 +1,26 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  avatar: string;
+  isConfirmed: boolean;
+  verificationStatus: string;
+}
+
+interface LoginResponse {
+  message: string;
+  success: boolean;
+  statusCode: number;
+  user: User;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,32 +29,48 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private router: Router) {
-    // Check if user is already logged in
-    const token = localStorage.getItem('admin_token');
-    if (token) {
-      this.isAuthenticatedSubject.next(true);
-    }
-  }
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable();
 
-  login(email: string, password: string): boolean {
-    // This is a simple mock implementation. In a real app, you would validate against a backend
-    if (email === 'admin@example.com' && password === 'admin123') {
-      localStorage.setItem('admin_token', 'mock_token');
-      this.isAuthenticatedSubject.next(true);
-      this.router.navigate(['/dashboard']);
-      return true;
-    }
-    return false;
+  constructor(private http: HttpClient, private router: Router) {}
+
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      'http://localhost:5000/api/v1/auth/login',
+      { email, password },
+      { withCredentials: true }
+    ).pipe(
+      tap((response) => {
+        if (response.success) {
+          this.isAuthenticatedSubject.next(true);
+          this.userSubject.next(response.user);
+          const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
+          this.router.navigateByUrl(returnUrl);
+        }
+      })
+    );
   }
 
   logout(): void {
-    localStorage.removeItem('admin_token');
-    this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
+    this.http.post('http://localhost:5000/api/v1/auth/logout', {}, { withCredentials: true }).subscribe({
+      next: () => {
+        this.isAuthenticatedSubject.next(false);
+        this.userSubject.next(null);
+        this.router.navigate(['/login']);
+      },
+      error: () => {
+        this.isAuthenticatedSubject.next(false);
+        this.userSubject.next(null);
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
-} 
+
+  getUser(): User | null {
+    return this.userSubject.value;
+  }
+}

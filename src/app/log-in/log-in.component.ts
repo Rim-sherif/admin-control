@@ -1,7 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-log-in',
@@ -15,13 +16,21 @@ export class LogInComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  onSubmit() {
-    if (this.authService.login(this.email, this.password)) {
-      this.errorMessage = '';
-    } else {
-      this.errorMessage = 'Invalid email or password';
-    }
+  onSubmit(): void {
+    this.authService.login(this.email, this.password).subscribe({
+      next: (response) => {
+        this.errorMessage = '';
+        // Redirect is handled in AuthService
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Invalid email or password';
+      }
+    });
   }
 }
