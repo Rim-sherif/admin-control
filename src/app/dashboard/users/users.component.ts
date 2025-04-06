@@ -1,3 +1,4 @@
+// users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { AdminService, Instructor } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
@@ -15,6 +16,7 @@ export class UsersComponent implements OnInit {
   instructors: Instructor[] = [];
   selectedInstructorId: string | null = null;
   rejectionReason: string = '';
+  customRejectionReason: string = '';
   rejectionReasons: string[] = [
     'Incomplete Documentation',
     'Invalid Credentials',
@@ -59,12 +61,17 @@ export class UsersComponent implements OnInit {
 
   initiateRejectInstructor(instructorId: string): void {
     this.selectedInstructorId = instructorId;
-    this.rejectionReason = this.rejectionReasons[0]; 
+    this.rejectionReason = this.rejectionReasons[0];
+    this.customRejectionReason = '';
   }
 
   rejectInstructor(): void {
     if (this.selectedInstructorId && this.rejectionReason) {
-      this.adminService.rejectInstructor(this.selectedInstructorId, this.rejectionReason).subscribe({
+      const finalReason = this.rejectionReason === 'Other' && this.customRejectionReason 
+        ? this.customRejectionReason 
+        : this.rejectionReason;
+      
+      this.adminService.rejectInstructor(this.selectedInstructorId, finalReason).subscribe({
         next: (response) => {
           console.log('Instructor rejected:', response);
           this.updateInstructorStatus(this.selectedInstructorId, 'Rejected');
@@ -85,6 +92,7 @@ export class UsersComponent implements OnInit {
   cancelReject(): void {
     this.selectedInstructorId = null;
     this.rejectionReason = '';
+    this.customRejectionReason = '';
   }
 
   private updateInstructorStatus(instructorId: string, status: string): void {
