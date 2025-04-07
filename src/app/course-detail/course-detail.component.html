@@ -1,0 +1,22 @@
+<div *ngIf="course" class="p-6 bg-white rounded-xl shadow space-y-4">
+  <h1 class="text-2xl font-bold">{{ course.title }}</h1>
+  <img 
+    class="w-full h-auto rounded-2xl object-cover"
+    [src]="course.url" 
+    alt="Course Thumbnail"
+    />
+  <p>{{ course.description }}</p>
+  <p class="text-gray-600">
+    <strong>Instructor:</strong> {{ course.instructor.firstName }}
+    {{ course.instructor.lastName }}
+  </p>
+  <p>
+    <strong>Price:</strong>
+    {{ course.access_type === "free" ? "Free" : "$" + course.price }}
+  </p>
+  <div class="flex justify-end text-sm gap-3">
+    <button class="bg-green-600 text-white py-3 px-4 font-semibold rounded">Approved</button>
+    <button class="bg-red-700 text-white py-3 px-6 font-semibold rounded">Reject</button>
+  </div>
+
+</div>

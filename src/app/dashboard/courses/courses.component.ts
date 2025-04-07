@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 export interface Instructor {
   _id: string;
@@ -44,14 +45,14 @@ export interface Course {
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule , RouterModule],
   templateUrl: './courses.component.html',
 })
 export class CoursesComponent {
   activeTab: 'published' | 'requests' = 'published';
   searchTerm: string = '';
   publishedCourses: Course[] = [];
-  courseRequests: Course[] = []; // إضافتها للكورسات pending
+  courseRequests: Course[] = [];
 
 
   constructor(private http: HttpClient) {}
@@ -80,25 +81,7 @@ export class CoursesComponent {
 
   }
   
-  // courseRequests: Course[] = [
-  //   {
-  //     id: 3,
-  //     title: 'Advanced TypeScript',
-  //     description: 'Deep dive into TypeScript features',
-  //     status: 'pending',
-  //     instructor: 'Mike Johnson',
-  //     createdAt: new Date('2023-03-10')
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'Node.js Backend Development',
-  //     description: 'Build scalable backend services',
-  //     status: 'pending',
-  //     instructor: 'Sarah Williams',
-  //     createdAt: new Date('2023-03-15')
-  //   }
-  // ];
-
+ 
   get filteredPublishedCourses(): Course[] {
     return this.publishedCourses.filter(course => 
       course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -113,32 +96,5 @@ export class CoursesComponent {
     );
   }
 
-  // approveCourse(courseId: string): void {
-  //   const courseIndex = this.courseRequests.findIndex(c => c._id === courseId);
-  //   if (courseIndex !== -1) {
-  //     const course = this.courseRequests[courseIndex];
-  //     // course.status = 'published';
-  //     this.publishedCourses.push(course);
-  //     this.courseRequests.splice(courseIndex, 1);
-  //     // In a real app, you would call a service here to update the backend
-  //   }
-  // }
 
-  // rejectCourse(courseId: string): void {
-  //   const courseIndex = this.courseRequests.findIndex(c => c._id === courseId);
-  //   if (courseIndex !== -1) {
-  //     const course = this.courseRequests[courseIndex];
-  //     // course.status = 'rejected';
-  //     this.courseRequests.splice(courseIndex, 1);
-  //     // In a real app, you would call a service here to update the backend
-  //   }
-  // }
-
-  // deleteCourse(courseId: string): void {
-  //   const courseIndex = this.publishedCourses.findIndex(c => c._id === courseId);
-  //   if (courseIndex !== -1) {
-  //     this.publishedCourses.splice(courseIndex, 1);
-  //     // In a real app, you would call a service here to update the backend
-  //   }
-  // }
 }

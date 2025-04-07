@@ -8,9 +8,6 @@
         placeholder="Search courses..."
         class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#410445]"
       >
-      <!-- <button class="px-4 py-2 bg-[#410445] text-white rounded-md hover:bg-[#8c2f94] text-sm">
-        Add New Course
-      </button> -->
     </div>
   </div>
 
@@ -75,8 +72,7 @@
             </div>
         
             <a
-              [href]="course.url"
-              target="_blank"
+              [routerLink]="['/dashboard/courses', course._id]"
               class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
               Show Course
             </a>
@@ -85,6 +81,7 @@
       </li>
     </ul>
   </div>
+
 
   <div *ngIf="activeTab === 'requests'" class="overflow-hidden sm:rounded-md">
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -126,10 +123,8 @@
             </div>
         
             <a
-              [href]="course.url"
-              target="_blank"
-              class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300"
-            >
+              [routerLink]="[course._id]"
+              class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
               Show Course
             </a>
           </div>
@@ -138,4 +133,5 @@
     </ul>
     
   </div>
+
 </div>
