@@ -51,6 +51,7 @@ export class CoursesComponent {
   activeTab: 'published' | 'requests' = 'published';
   searchTerm: string = '';
   publishedCourses: Course[] = [];
+  courseRequests: Course[] = []; // إضافتها للكورسات pending
 
 
   constructor(private http: HttpClient) {}
@@ -65,27 +66,20 @@ export class CoursesComponent {
           console.error('Error fetching courses:', error);
         }
       );
+
+
+      this.http.get<any>('http://localhost:5000/api/v1/course/allPending')
+      .subscribe(
+        (data) => {
+          this.courseRequests = data.courses;
+        },
+        (error) => {
+          console.error('Error fetching pending courses:', error);
+        }
+      );
+
   }
   
-  // publishedCourses: Course[] = [
-  //   {
-  //     id: 1,
-  //     title: 'Angular Masterclass',
-  //     description: 'Learn Angular from scratch to advanced',
-  //     status: 'published',
-  //     instructor: 'John Doe',
-  //     createdAt: new Date('2023-01-15')
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'React Fundamentals',
-  //     description: 'Master the basics of React',
-  //     status: 'published',
-  //     instructor: 'Jane Smith',
-  //     createdAt: new Date('2023-02-20')
-  //   }
-  // ];
-
   // courseRequests: Course[] = [
   //   {
   //     id: 3,
@@ -112,12 +106,12 @@ export class CoursesComponent {
     );
   }
 
-  // filteredCourseRequests(): Course[] {
-  //   return this.courseRequests.filter(course => 
-  //     course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-  //     course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
-  //   );
-  // }
+  filteredCourseRequests(): Course[] {
+    return this.courseRequests.filter(course => 
+      course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+      course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    );
+  }
 
   // approveCourse(courseId: string): void {
   //   const courseIndex = this.courseRequests.findIndex(c => c._id === courseId);
