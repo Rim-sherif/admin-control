@@ -23,6 +23,9 @@ export class UsersComponent implements OnInit {
     'Failed Video Verification',
     'Other'
   ];
+  showMediaModal: boolean = false;
+  selectedMediaUrl: string | null = null;
+  isVideo: boolean = false;
 
   constructor(private adminService: AdminService, private authService: AuthService) {}
 
@@ -93,6 +96,18 @@ export class UsersComponent implements OnInit {
     this.selectedInstructorId = null;
     this.rejectionReason = '';
     this.customRejectionReason = '';
+  }
+
+  showMedia(url: string, isVideo: boolean = false): void {
+    this.selectedMediaUrl = url;
+    this.isVideo = isVideo;
+    this.showMediaModal = true;
+  }
+
+  closeMediaModal(): void {
+    this.showMediaModal = false;
+    this.selectedMediaUrl = null;
+    this.isVideo = false;
   }
 
   private updateInstructorStatus(instructorId: string, status: string): void {

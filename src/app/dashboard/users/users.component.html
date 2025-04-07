@@ -44,10 +44,18 @@
           </td>
           <td class="px-6 py-4">
             <div class="text-sm text-gray-500">
-              <a *ngIf="instructor.documents.frontId" [href]="instructor.documents.frontId" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-2">Front ID</a>
-              <a *ngIf="instructor.documents.backId" [href]="instructor.documents.backId" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-2">Back ID</a>
-              <a *ngIf="instructor.documents.requiredVideo" [href]="instructor.documents.requiredVideo" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-2">Req. Video</a>
-              <a *ngIf="instructor.documents.optionalVideo" [href]="instructor.documents.optionalVideo" target="_blank" class="text-indigo-600 hover:text-indigo-900">Opt. Video</a>
+              <a *ngIf="instructor.documents.frontId" 
+                 (click)="showMedia(instructor.documents.frontId)" 
+                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer">Front ID</a>
+              <a *ngIf="instructor.documents.backId" 
+                 (click)="showMedia(instructor.documents.backId)" 
+                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer">Back ID</a>
+              <a *ngIf="instructor.documents.requiredVideo" 
+                 (click)="showMedia(instructor.documents.requiredVideo, true)" 
+                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer">Req. Video</a>
+              <a *ngIf="instructor.documents.optionalVideo" 
+                 (click)="showMedia(instructor.documents.optionalVideo, true)" 
+                 class="text-indigo-600 hover:text-indigo-900 cursor-pointer">Opt. Video</a>
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
@@ -102,6 +110,35 @@
                 [disabled]="rejectionReason === 'Other' && !customRejectionReason">
           Confirm Rejection
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media Modal -->
+  <div *ngIf="showMediaModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded-lg shadow-lg max-w-3xl w-full">
+      <div class="flex justify-end">
+        <button (click)="closeMediaModal()" 
+                class="text-gray-500 hover:text-gray-700">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="mt-2 flex justify-center">
+        <ng-container *ngIf="selectedMediaUrl">
+          <img *ngIf="!isVideo" 
+               [src]="selectedMediaUrl" 
+               alt="Document" 
+               class="max-h-[80vh] max-w-full object-contain">
+          <video *ngIf="isVideo" 
+                 [src]="selectedMediaUrl" 
+                 controls 
+                 autoplay 
+                 class="max-h-[80vh] max-w-full">
+            Your browser does not support the video tag.
+          </video>
+        </ng-container>
       </div>
     </div>
   </div>
