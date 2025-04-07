@@ -1,22 +1,59 @@
 <div *ngIf="course" class="p-6 bg-white rounded-xl shadow space-y-4">
-  <h1 class="text-2xl font-bold">{{ course.title }}</h1>
-  <img 
-    class="w-full h-auto rounded-2xl object-cover"
-    [src]="course.url" 
-    alt="Course Thumbnail"
+    <h1 class="text-2xl font-bold text-center text-gray-900 my-4 mb-6">{{ course.title }}</h1>
+
+    <img 
+      class="w-full h-auto rounded-2xl object-cover mb-6"
+      [src]="course.url" 
+      alt="Course Thumbnail"
     />
-  <p>{{ course.description }}</p>
-  <p class="text-gray-600">
-    <strong>Instructor:</strong> {{ course.instructor.firstName }}
-    {{ course.instructor.lastName }}
-  </p>
-  <p>
-    <strong>Price:</strong>
-    {{ course.access_type === "free" ? "Free" : "$" + course.price }}
-  </p>
-  <div class="flex justify-end text-sm gap-3">
-    <button class="bg-green-600 text-white py-3 px-4 font-semibold rounded">Approved</button>
-    <button class="bg-red-700 text-white py-3 px-6 font-semibold rounded">Reject</button>
-  </div>
+  
+    <div class="mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800">Description</h2>
+      <p class="text-[14px] leading-relaxed text-gray-600">{{ course.description }}</p>
+    </div>
+  
+    <div class="learning-points mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-3">Learning Points</h2>
+      <ul class="space-y-2">
+        <li *ngFor="let point of course.learningPoints" class="text-sm text-gray-700">
+          {{ point }}
+        </li>
+      </ul>
+    </div>
+  
+    <div class="learning-points mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-3">Requirements</h2>
+      <ul class="space-y-2 text-sm text-gray-700">
+        <li *ngFor="let point of course.requirements">
+          {{ point }}
+        </li>
+      </ul>
+    </div>
+  
+    <div class="mb-3">
+      <p class="text-sm text-gray-800">
+        <strong>Instructor:</strong> {{ course.instructor.firstName }} {{ course.instructor.lastName }}
+      </p>
+    </div>
+  
+    <div>
+      <p class="text-sm text-gray-800">
+        <strong>Price:</strong> 
+        <span class="font-semibold">
+          {{ course.access_type === 'free' ? 'Free' : '$' + course.price }}
+        </span>
+      </p>
+    </div>
+  <div 
+  class="flex justify-end text-sm gap-3"
+  *ngIf="course?.status !== 'approved'"
+>
+  <button (click)="approveCourse()" class="bg-green-600 text-white py-3 px-4 font-semibold rounded">
+    Approved
+  </button>
+  <button (click)="rejectCourse()" class="bg-red-700 text-white py-3 px-6 font-semibold rounded">
+    Reject
+  </button>
+</div>
 
 </div>
