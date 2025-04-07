@@ -18,8 +18,19 @@ export const routes: Routes = [
       },
       {
         path: 'courses',
-        loadComponent: () => import('./dashboard/courses/courses.component').then(m => m.CoursesComponent)
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./dashboard/courses/courses.component').then(m => m.CoursesComponent),
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./course-detail/course-detail.component').then(m => m.CourseDetailComponent)
+          },
+        ]
       },
+      
       {
         path: 'users',
         loadComponent: () => import('./dashboard/users/users.component').then(m => m.UsersComponent)
