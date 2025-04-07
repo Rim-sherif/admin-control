@@ -8,9 +8,9 @@
         placeholder="Search courses..."
         class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#410445]"
       >
-      <button class="px-4 py-2 bg-[#410445] text-white rounded-md hover:bg-[#8c2f94] text-sm">
+      <!-- <button class="px-4 py-2 bg-[#410445] text-white rounded-md hover:bg-[#8c2f94] text-sm">
         Add New Course
-      </button>
+      </button> -->
     </div>
   </div>
 
@@ -22,7 +22,8 @@
       >
         Published Courses
       </button>
-      <button 
+
+      <!-- <button 
         (click)="activeTab = 'requests'"
         [class]="activeTab === 'requests' ? 'border-[#410445] text-[#410445] whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'"
       >
@@ -30,41 +31,64 @@
         <span *ngIf="courseRequests.length > 0" class="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
           {{ courseRequests.length }}
         </span>
-      </button>
+      </button> -->
     </nav>
   </div>
 
-  <div *ngIf="activeTab === 'published'" class="bg-white shadow overflow-hidden sm:rounded-md">
-    <ul class="divide-y divide-gray-200">
-      <li *ngFor="let course of filteredPublishedCourses()" class="px-6 py-4 hover:bg-gray-50">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-lg font-medium text-gray-900">{{ course.title }}</h3>
-            <p class="text-sm text-gray-500">{{ course.description }}</p>
-            <div class="mt-1 flex items-center text-sm text-gray-500">
-              <span>Instructor: {{ course.instructor }}</span>
-              <span class="mx-1">•</span>
-              <span>Published: {{ course.createdAt | date }}</span>
+  <div *ngIf="activeTab === 'published'" class="sm:rounded-md">
+    <ul class="flex flex-wrap  justify-between">
+      <li *ngFor="let course of filteredPublishedCourses" class="w-[full] sm:w-[49%] md:w-[32%] lg:w-[24.3%] py-4 hover:bg-gray-50">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+          <img 
+            class="w-full h-48 p-4 rounded-3xl object-cover"
+            [src]="course.url" 
+            alt="Course Thumbnail"
+          />
+        
+          <div class="p-4 space-y-3">
+            <h2 class="text-xl font-bold text-gray-800">{{ course.title.split(" ").slice(0,3).join(" ") }}</h2>
+            <div class="flex items-center gap-2 mt-2">
+              <img
+                class="w-8 h-8 rounded-full object-cover"
+                [src]="course.instructor.url"
+                alt="Instructor Avatar"
+              />
+              <span class="text-sm font-medium text-gray-700">
+                {{ course.instructor.firstName }} {{ course.instructor.lastName }}
+              </span>
             </div>
-          </div>
-          <div class="flex space-x-2">
-            <button class="px-3 py-1 text-sm text-[#410445] hover:text-indigo-900">Edit</button>
-            <button 
-              (click)="deleteCourse(course.id)"
-              class="px-3 py-1 text-sm text-red-600 hover:text-red-900"
+        
+            <div class="flex justify-between items-center mt-4">
+              <span class="text-green-600 font-semibold">
+                {{ course.access_type === 'free' ? 'Free' : '$' + course.price }}
+              </span>
+        
+              <span class="px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded-full capitalize">
+                {{ course.level }}
+              </span>
+            </div>
+        
+            <div class="mt-3">
+              <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                {{ course.category.title }}
+              </span>
+            </div>
+        
+            <a
+              [href]="course.url"
+              target="_blank"
+              class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300"
             >
-              Delete
-            </button>
+              Show Course
+            </a>
           </div>
         </div>
       </li>
-      <li *ngIf="filteredPublishedCourses().length === 0" class="px-6 py-4 text-center text-gray-500">
-        No published courses found
-      </li>
     </ul>
+    
   </div>
 
-  <div *ngIf="activeTab === 'requests'" class="bg-white shadow overflow-hidden sm:rounded-md">
+  <!-- <div *ngIf="activeTab === 'requests'" class="bg-white shadow overflow-hidden sm:rounded-md">
     <ul class="divide-y divide-gray-200">
       <li *ngFor="let course of filteredCourseRequests()" class="px-6 py-4 hover:bg-gray-50">
         <div class="flex items-center justify-between">
@@ -97,5 +121,5 @@
         No pending course requests
       </li>
     </ul>
-  </div>
+  </div> -->
 </div>
