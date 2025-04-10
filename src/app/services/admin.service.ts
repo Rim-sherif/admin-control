@@ -1,8 +1,21 @@
-// admin.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// Ticket interface
+export interface Ticket {
+  _id: string;
+  subject: string;
+  message: string;
+  status: string;
+  priority: string;
+  createdAt: string;
+  updatedAt: string;
+  resolution?: string;
+  assignedTo?: string;
+}
+
+// Instructor interface
 export interface Instructor {
   _id: string;
   firstName: string;
@@ -10,36 +23,97 @@ export interface Instructor {
   email: string;
   verificationStatus: string;
   createdAt: string;
-  backId: string;
-  frontId: string;
-  optionalVideo: string | null;
-  requiredVideo: string;
-  documents: {
-    frontId: string;
-    backId: string;
-    requiredVideo: string;
-    optionalVideo: string | null;
+  backId?: string;
+  frontId?: string;
+  optionalVideo?: string | null;
+  requiredVideo?: string;
+  documents?: {
+    frontId?: string;
+    backId?: string;
+    requiredVideo?: string;
+    optionalVideo?: string | null;
   };
 }
 
+// Response interfaces
+
+export interface TicketsResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    tickets: Ticket[]; // Array of tickets
+    user?: any;        // Optional user data
+  };
+}
+export interface TicketResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    ticket?: Ticket; // ticket is directly under data
+    user?: any; // Include user as optional for cases where it's returned
+  };
+}
+
+export interface UpdateTicketResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    ticket: Ticket; // ticket is required here
+    user?: any; // user is optional
+  };
+}
+
+export interface InstructorsResponse {
+  success: boolean;
+  message?: string;
+  data: Instructor[];
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:5000/api/v1/admin';
+  private customerSupportUrl = 'http://localhost:5000/api/v1/customersupport';
+  private adminUrl = 'http://localhost:5000/api/v1/admin';
 
   constructor(private http: HttpClient) {}
 
-  getPendingInstructors(): Observable<{ message: string; status: string; count: number; data: Instructor[] }> {
-    return this.http.get<{ message: string; status: string; count: number; data: Instructor[] }>(
-      `${this.apiUrl}/instructorsPending`,
+  // Ticket-related methods
+  getAllTickets(): Observable<TicketResponse> {
+    return this.http.get<TicketsResponse>(`${this.customerSupportUrl}/tickets`, {
+      withCredentials: true,
+    });
+  }
+
+  getTicketById(ticketId: string): Observable<TicketResponse> {
+    return this.http.get<TicketResponse>(
+      `${this.customerSupportUrl}/ticket/${ticketId}`,
+      { withCredentials: true }
+    );
+  }
+
+  updateTicket(
+    ticketId: string,
+    updateData: Partial<Ticket>
+  ): Observable<UpdateTicketResponse> {
+    return this.http.put<UpdateTicketResponse>(
+      `${this.customerSupportUrl}/ticket/${ticketId}`,
+      updateData,
+      { withCredentials: true }
+    );
+  }
+
+  // Instructor-related methods
+  getAllInstructors(): Observable<InstructorsResponse> {
+    return this.http.get<InstructorsResponse>(
+      `${this.adminUrl}/allInstructors`,
       { withCredentials: true }
     );
   }
 
   approveInstructor(instructorId: string): Observable<any> {
     return this.http.put(
-      `${this.apiUrl}/approveIns/${instructorId}`,
+      `${this.adminUrl}/approveIns/${instructorId}`,
       {},
       { withCredentials: true }
     );
@@ -47,8 +121,8 @@ export class AdminService {
 
   rejectInstructor(instructorId: string, reason: string): Observable<any> {
     return this.http.put(
-      `${this.apiUrl}/rejectIns/${instructorId}`,
-      { reason }, // Include reason in the request body
+      `${this.adminUrl}/rejectIns/${instructorId}`,
+      { reason },
       { withCredentials: true }
     );
   }

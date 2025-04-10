@@ -25,7 +25,6 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
- 
   faBars = faBars;
   faTimes = faTimes;
   faHome = faHome;
@@ -56,4 +55,4 @@ export class DashboardComponent {
   logout() {
     this.authService.logout();
   }
-} 
+}

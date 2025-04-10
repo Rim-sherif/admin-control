@@ -1,0 +1,88 @@
+<!-- ticket-dialog.component.html -->
+<div class="p-6 max-h-[80vh] overflow-y-auto">
+  <h2 class="text-xl font-semibold text-[#410445] mb-4">Ticket Details</h2>
+  <div *ngIf="!ticket" class="text-red-500 mb-4">
+    {{ errorMessage || 'Failed to load ticket details. Please try again or check the ticket ID.' }}
+  </div>
+  <div *ngIf="ticket" class="mb-6">
+    <p class="mb-2"><strong>Subject:</strong> {{ ticket.subject }}</p>
+    <p class="mb-2"><strong>Message:</strong> {{ ticket.message }}</p>
+    <p class="mb-2"><strong>Status:</strong> {{ ticket.status }}</p>
+    <p class="mb-2"><strong>Priority:</strong> {{ ticket.priority }}</p>
+    <p class="mb-2">
+      <strong>Created At:</strong> {{ ticket.createdAt | date : "short" }}
+    </p>
+    <p class="mb-2">
+      <strong>Updated At:</strong> {{ ticket.updatedAt | date : "short" }}
+    </p>
+    <p *ngIf="ticket.resolution" class="mb-2">
+      <strong>Resolution:</strong> {{ ticket.resolution }}
+    </p>
+  </div>
+
+  <h3 class="text-lg font-semibold text-[#410445] mb-4">Update Ticket</h3>
+  <form (ngSubmit)="updateTicket()" class="space-y-4">
+    <div *ngIf="errorMessage && ticket" class="text-red-500 mb-4">
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="ticket">
+      <label for="status" class="block text-sm font-medium text-gray-700"
+        >Status</label
+      >
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-select id="status" [(ngModel)]="ticket.status" name="status">
+          <mat-option value="open">Open</mat-option>
+          <mat-option value="closed">Closed</mat-option>
+          <mat-option value="in-progress">In Progress</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="ticket">
+      <label for="priority" class="block text-sm font-medium text-gray-700"
+        >Priority</label
+      >
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-select id="priority" [(ngModel)]="ticket.priority" name="priority">
+          <mat-option value="low">Low</mat-option>
+          <mat-option value="medium">Medium</mat-option>
+          <mat-option value="high">High</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="ticket">
+      <label for="resolution" class="block text-sm font-medium text-gray-700"
+        >Resolution</label
+      >
+      <mat-form-field appearance="fill" class="w-full">
+        <textarea
+          matInput
+          id="resolution"
+          [(ngModel)]="ticket.resolution"
+          name="resolution"
+          class="w-full"
+          rows="4"
+        ></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="flex justify-end space-x-3">
+      <button
+        type="submit"
+        [disabled]="!ticket"
+        class="bg-[#6b3fa0] text-white px-4 py-2 rounded-md hover:bg-[#a78bfa] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+      >
+        Update
+      </button>
+      <button
+        type="button"
+        (click)="closeDialog()"
+        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

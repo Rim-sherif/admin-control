@@ -1,10 +1,29 @@
-// users.component.ts
+// src/app/users/users.component.ts
 import { Component, OnInit } from '@angular/core';
-import { AdminService, Instructor } from '../../services/admin.service';
+import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+interface LocalInstructor {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  createdAt: string;
+  verificationStatus: string;
+  frontId?: string;
+  backId?: string;
+  requiredVideo?: string;
+  optionalVideo?: string;
+  documents?: {
+    frontId?: string;
+    backId?: string;
+    requiredVideo?: string;
+    optionalVideo?: string | null;
+  } | null;
+}
 
 @Component({
   selector: 'app-users',
@@ -13,7 +32,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './users.component.html',
 })
 export class UsersComponent implements OnInit {
-  instructors: Instructor[] = [];
+  instructors: LocalInstructor[] = [];
+  filteredInstructors: LocalInstructor[] = [];
   selectedInstructorId: string | null = null;
   rejectionReason: string = '';
   customRejectionReason: string = '';
@@ -21,44 +41,70 @@ export class UsersComponent implements OnInit {
     'Incomplete Documentation',
     'Invalid Credentials',
     'Failed Video Verification',
-    'Other'
+    'Other',
   ];
   showMediaModal: boolean = false;
   selectedMediaUrl: string | null = null;
   isVideo: boolean = false;
+  selectedFilter: string = 'all';
 
-  constructor(private adminService: AdminService, private authService: AuthService) {}
+  constructor(
+    private adminService: AdminService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.loadPendingInstructors();
+    // Only load instructors if authenticated
+    if (this.authService.isAuthenticated()) {
+      this.loadAllInstructors();
+    } else {
+      console.warn('User not authenticated. Redirecting to login...');
+      this.authService.logout();
+      // Optionally add navigation: this.router.navigate(['/login']);
+      // Requires injecting Router and adding it to imports if used
+    }
   }
 
-  loadPendingInstructors(): void {
-    this.adminService.getPendingInstructors().subscribe({
+  loadAllInstructors(): void {
+    this.adminService.getAllInstructors().subscribe({
       next: (response) => {
         this.instructors = response.data;
+        this.applyFilter();
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error fetching pending instructors:', error);
-        if (error.status === 401) {
+        console.error('Error fetching all instructors:', error);
+        if (error.status === 401 || error.status === 400) {
           this.authService.logout();
+          // Optionally redirect: this.router.navigate(['/login']);
         }
-      }
+      },
     });
+  }
+
+  applyFilter(): void {
+    if (this.selectedFilter === 'all') {
+      this.filteredInstructors = [...this.instructors];
+    } else {
+      this.filteredInstructors = this.instructors.filter(
+        (instructor) =>
+          instructor.verificationStatus.toLowerCase() === this.selectedFilter
+      );
+    }
   }
 
   approveInstructor(instructorId: string): void {
     this.adminService.approveInstructor(instructorId).subscribe({
       next: (response) => {
         console.log('Instructor approved:', response);
-        this.updateInstructorStatus(instructorId, 'Approved');
+        this.updateInstructorStatus(instructorId, 'approved');
+        this.applyFilter();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error approving instructor:', error);
-        if (error.status === 401) {
+        if (error.status === 401 || error.status === 400) {
           this.authService.logout();
         }
-      }
+      },
     });
   }
 
@@ -70,25 +116,27 @@ export class UsersComponent implements OnInit {
 
   rejectInstructor(): void {
     if (this.selectedInstructorId && this.rejectionReason) {
-      const finalReason = this.rejectionReason === 'Other' && this.customRejectionReason 
-        ? this.customRejectionReason 
-        : this.rejectionReason;
-      
-      this.adminService.rejectInstructor(this.selectedInstructorId, finalReason).subscribe({
-        next: (response) => {
-          console.log('Instructor rejected:', response);
-          this.updateInstructorStatus(this.selectedInstructorId, 'Rejected');
-          this.cancelReject();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error rejecting instructor:', error);
-          if (error.status === 401) {
-            this.authService.logout();
-          }
-        }
-      });
-    } else {
-      console.warn('Cannot reject instructor: missing ID or reason');
+      const finalReason =
+        this.rejectionReason === 'Other' && this.customRejectionReason
+          ? this.customRejectionReason
+          : this.rejectionReason;
+
+      this.adminService
+        .rejectInstructor(this.selectedInstructorId, finalReason)
+        .subscribe({
+          next: (response) => {
+            console.log('Instructor rejected:', response);
+            this.updateInstructorStatus(this.selectedInstructorId, 'rejected');
+            this.cancelReject();
+            this.applyFilter();
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error rejecting instructor:', error);
+            if (error.status === 401 || error.status === 400) {
+              this.authService.logout();
+            }
+          },
+        });
     }
   }
 
@@ -97,11 +145,30 @@ export class UsersComponent implements OnInit {
     this.rejectionReason = '';
     this.customRejectionReason = '';
   }
+  showMedia(
+    url: string | undefined,
+    type: string,
+    instructor: LocalInstructor
+  ): void {
+    let mediaUrl = '';
+    if (
+      instructor.documents &&
+      instructor.documents[type as keyof typeof instructor.documents]
+    ) {
+      mediaUrl = instructor.documents[
+        type as keyof typeof instructor.documents
+      ] as string;
+    } else if (instructor[type as keyof LocalInstructor]) {
+      mediaUrl = instructor[type as keyof LocalInstructor] as string;
+    } else if (url) {
+      mediaUrl = url;
+    }
 
-  showMedia(url: string, isVideo: boolean = false): void {
-    this.selectedMediaUrl = url;
-    this.isVideo = isVideo;
-    this.showMediaModal = true;
+    if (mediaUrl) {
+      this.selectedMediaUrl = mediaUrl;
+      this.isVideo = type === 'requiredVideo' || type === 'optionalVideo';
+      this.showMediaModal = true;
+    }
   }
 
   closeMediaModal(): void {
@@ -111,7 +178,7 @@ export class UsersComponent implements OnInit {
   }
 
   private updateInstructorStatus(instructorId: string, status: string): void {
-    const instructor = this.instructors.find(i => i._id === instructorId);
+    const instructor = this.instructors.find((i) => i._id === instructorId);
     if (instructor) {
       instructor.verificationStatus = status;
     }

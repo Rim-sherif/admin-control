@@ -52,7 +52,7 @@
         routerLink="/dashboard"
         routerLinkActive="bg-white text-[#410445] shadow-md"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="flex items-center px-4 py-3 rounded-lg  mb-1 transition-all"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
         (click)="closeSidebarOnMobile()"
       >
         <fa-icon [icon]="faHome" class="mr-3 text-purple-300"></fa-icon>
@@ -64,7 +64,7 @@
       <a
         routerLink="/dashboard/courses"
         routerLinkActive="bg-white text-[#410445] shadow-md"
-        class="flex items-center px-4 py-3 rounded-lg  mb-1 transition-all"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
         (click)="closeSidebarOnMobile()"
       >
         <fa-icon [icon]="faBook" class="mr-3 text-purple-300"></fa-icon>
@@ -73,19 +73,25 @@
       <a
         routerLink="/dashboard/users"
         routerLinkActive="bg-white text-[#410445] shadow-md"
-        class="flex items-center px-4 py-3 rounded-lg  mb-1 transition-all"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
         (click)="closeSidebarOnMobile()"
       >
         <fa-icon [icon]="faUsers" class="mr-3 text-purple-300"></fa-icon>
         <span>Users</span>
-        <span class="ml-auto bg-green-500 text-xs px-2 py-1 rounded-full"
-          >12</span
-        >
+      </a>
+      <a
+        routerLink="/dashboard/tickets"
+        routerLinkActive="bg-white text-[#410445] shadow-md"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faTasks" class="mr-3 text-purple-300"></fa-icon>
+        <span>Tickets</span>
       </a>
       <a
         routerLink="/dashboard/settings"
         routerLinkActive="bg-white text-[#410445] shadow-md"
-        class="flex items-center px-4 py-3 rounded-lg  mb-1 transition-all"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
         (click)="closeSidebarOnMobile()"
       >
         <fa-icon [icon]="faCog" class="mr-3 text-purple-300"></fa-icon>
@@ -133,7 +139,6 @@
       </div>
     </main>
   </div>
-
 
   <div
     *ngIf="isSidebarOpen"
