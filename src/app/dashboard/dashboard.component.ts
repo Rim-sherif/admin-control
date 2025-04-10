@@ -8,6 +8,7 @@ import {
   faBook,
   faChartLine,
   faCog,
+  faFolder, // Add this
   faHome,
   faShieldAlt,
   faSignOutAlt,
@@ -37,6 +38,7 @@ export class DashboardComponent {
   faUser = faUser;
   faChartLine = faChartLine;
   faTasks = faTasks;
+  faFolder = faFolder; // Add this
 
   isSidebarOpen = false;
 
@@ -47,7 +49,7 @@ export class DashboardComponent {
   }
 
   closeSidebarOnMobile() {
-    if (window.innerWidth < 1024) { 
+    if (window.innerWidth < 1024) {
       this.isSidebarOpen = false;
     }
   }

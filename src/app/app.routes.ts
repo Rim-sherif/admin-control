@@ -42,7 +42,6 @@ export const routes: Routes = [
           },
         ],
       },
-
       {
         path: 'users',
         loadComponent: () =>
@@ -62,6 +61,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./dashboard/tickets/tickets.component').then(
             (m) => m.TicketsComponent
+          ),
+      },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./dashboard/categories/categories.component').then(
+            (m) => m.CategoriesComponent
           ),
       },
     ],

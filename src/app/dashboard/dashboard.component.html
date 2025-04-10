@@ -89,6 +89,15 @@
         <span>Tickets</span>
       </a>
       <a
+        routerLink="/dashboard/categories"
+        routerLinkActive="bg-white text-[#410445] shadow-md"
+        class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
+        (click)="closeSidebarOnMobile()"
+      >
+        <fa-icon [icon]="faFolder" class="mr-3 text-purple-300"></fa-icon>
+        <span>Categories</span>
+      </a>
+      <a
         routerLink="/dashboard/settings"
         routerLinkActive="bg-white text-[#410445] shadow-md"
         class="flex items-center px-4 py-3 rounded-lg mb-1 transition-all"
