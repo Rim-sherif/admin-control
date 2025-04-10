@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './ticket-dialog.component.html',
 })
 export class TicketDialogComponent implements OnInit {
-  ticket: Ticket | null = null;
+  ticket: any = null;
   errorMessage: string = '';
 
   constructor(
@@ -35,20 +35,20 @@ export class TicketDialogComponent implements OnInit {
   ngOnInit(): void {
     this.fetchTicket();
   }
-
   fetchTicket(): void {
     if (!this.data.ticketId) {
       this.errorMessage = 'Invalid ticket ID';
       return;
     }
-
+    console.log(this.data.ticketId);
+    
     this.adminService.getTicketById(this.data.ticketId).subscribe({
       next: (response) => {
-        if (response.success && response.data.ticket) {
-          this.ticket = response.data.ticket;
+        console.log(response);
+        if (response.success) {
+          this.ticket = response.ticket;
           this.errorMessage = '';
         } else {
-          this.errorMessage = response.message || 'Failed to load ticket details';
           this.ticket = null;
         }
       },

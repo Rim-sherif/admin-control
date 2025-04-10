@@ -47,11 +47,7 @@ export interface TicketsResponse {
 }
 export interface TicketResponse {
   success: boolean;
-  message?: string;
-  data: {
-    ticket?: Ticket; // ticket is directly under data
-    user?: any; // Include user as optional for cases where it's returned
-  };
+  ticket?: Ticket; // ticket is directly under data
 }
 
 export interface UpdateTicketResponse {

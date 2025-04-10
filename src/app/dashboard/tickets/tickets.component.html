@@ -1,35 +1,66 @@
-<!-- tickets.component.html -->
-<div class="p-6">
-  <h1 class="text-2xl font-semibold text-gray-800 mb-6">Support Tickets</h1>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <table class="w-full text-left">
-      <thead>
-        <tr class="border-b">
-          <th class="py-3 px-4 font-semibold text-gray-600">Subject</th>
-          <th class="py-3 px-4 font-semibold text-gray-600">Message</th>
-          <th class="py-3 px-4 font-semibold text-gray-600">Status</th>
-          <th class="py-3 px-4 font-semibold text-gray-600">Priority</th>
-          <th class="py-3 px-4 font-semibold text-gray-600">Created At</th>
-          <th class="py-3 px-4 font-semibold text-gray-600">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let ticket of tickets" class="border-b hover:bg-gray-50">
-          <td class="py-3 px-4">{{ ticket.subject }}</td>
-          <td class="py-3 px-4">{{ ticket.message }}</td>
-          <td class="py-3 px-4">{{ ticket.status }}</td>
-          <td class="py-3 px-4">{{ ticket.priority }}</td>
-          <td class="py-3 px-4">{{ ticket.createdAt | date: 'short' }}</td>
-          <td class="py-3 px-4">
-            <button
-              (click)="openTicketDialog(ticket)"
-              class="bg-[#6b3fa0] text-white px-4 py-2 rounded-md hover:bg-[#a78bfa] transition-colors"
-            >
-              View
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="container mx-auto py-6">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6 sm:text-3xl">Support Tickets</h1>
+  
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Mobile Scroll Container -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-50">
+          <tr class="border-b">
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Subject</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Message</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden sm:table-cell">Status</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden md:table-cell">Priority</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden lg:table-cell">Created At</th>
+            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of tickets" class="border-b hover:bg-gray-50">
+            <td class="py-3 px-4 text-sm sm:text-base">{{ ticket.subject }}</td>
+            <td class="py-3 px-4 text-sm sm:text-base truncate max-w-[200px] sm:max-w-none">{{ ticket.message }}</td>
+            <td class="py-3 px-4 text-sm sm:text-base hidden sm:table-cell">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': ticket.status === 'resolved',
+                      'bg-yellow-100 text-yellow-800': ticket.status === 'pending',
+                      'bg-red-100 text-red-800': ticket.status === 'open'
+                    }">
+                {{ ticket.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-sm sm:text-base hidden md:table-cell">{{ ticket.priority }}</td>
+            <td class="py-3 px-4 text-sm sm:text-base hidden lg:table-cell">{{ ticket.createdAt | date: 'short' }}</td>
+            <td class="py-3 px-4">
+              <button
+                (click)="openTicketDialog(ticket)"
+                class="w-full sm:w-auto bg-[#6b3fa0] text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[#a78bfa] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:ring-offset-2"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Mobile Card View Alternative -->
+    <div class="sm:hidden space-y-4 p-4">
+      <div *ngFor="let ticket of tickets" class="bg-gray-50 rounded-lg p-4 shadow-sm">
+        <div class="space-y-2">
+          <div><span class="font-semibold">Subject:</span> {{ ticket.subject }}</div>
+          <div><span class="font-semibold">Message:</span> {{ ticket.message }}</div>
+          <div><span class="font-semibold">Status:</span> {{ ticket.status }}</div>
+          <div><span class="font-semibold">Priority:</span> {{ ticket.priority }}</div>
+          <div><span class="font-semibold">Created:</span> {{ ticket.createdAt | date: 'short' }}</div>
+          <button
+            (click)="openTicketDialog(ticket)"
+            class="w-full bg-[#6b3fa0] text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[#a78bfa] transition-colors duration-200"
+          >
+            View
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
