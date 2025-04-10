@@ -20,49 +20,19 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Name
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Email
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Role
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Status
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Documents
-          </th>
-          <th
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Created At
-          </th>
-          <th
-            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            Actions
-          </th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Documents</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr *ngFor="let instructor of filteredInstructors">
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm font-medium text-gray-900">
-              {{ instructor.firstName }} {{ instructor.lastName }}
-            </div>
+            <div class="text-sm font-medium text-gray-900">{{ instructor.firstName }} {{ instructor.lastName }}</div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <div class="text-sm text-gray-500">{{ instructor.email }}</div>
@@ -74,12 +44,9 @@
             <span
               class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
               [ngClass]="{
-                'bg-green-100 text-green-800':
-                  instructor.verificationStatus === 'approved',
-                'bg-red-100 text-red-800':
-                  instructor.verificationStatus === 'rejected',
-                'bg-yellow-100 text-yellow-800':
-                  instructor.verificationStatus === 'pending'
+                'bg-green-100 text-green-800': instructor.verificationStatus === 'approved',
+                'bg-red-100 text-red-800': instructor.verificationStatus === 'rejected',
+                'bg-yellow-100 text-yellow-800': instructor.verificationStatus === 'pending'
               }"
             >
               {{ instructor.verificationStatus | titlecase }}
@@ -88,113 +55,100 @@
           <td class="px-6 py-4">
             <div class="text-sm text-gray-500">
               <a
-                *ngIf="
-                  instructor.frontId ||
-                  (instructor.documents && instructor.documents.frontId)
-                "
+                *ngIf="instructor.frontId || (instructor.documents && instructor.documents.frontId)"
                 (click)="showMedia(instructor.frontId, 'frontId', instructor)"
                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer"
-                >Front ID</a
-              >
+              >Front ID</a>
               <a
-                *ngIf="
-                  instructor.backId ||
-                  (instructor.documents && instructor.documents.backId)
-                "
+                *ngIf="instructor.backId || (instructor.documents && instructor.documents.backId)"
                 (click)="showMedia(instructor.backId, 'backId', instructor)"
                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer"
-                >Back ID</a
-              >
+              >Back ID</a>
               <a
-                *ngIf="
-                  instructor.requiredVideo ||
-                  (instructor.documents && instructor.documents.requiredVideo)
-                "
-                (click)="
-                  showMedia(
-                    instructor.requiredVideo,
-                    'requiredVideo',
-                    instructor
-                  )
-                "
+                *ngIf="instructor.requiredVideo || (instructor.documents && instructor.documents.requiredVideo)"
+                (click)="showMedia(instructor.requiredVideo, 'requiredVideo', instructor)"
                 class="text-indigo-600 hover:text-indigo-900 mr-2 cursor-pointer"
-                >Req. Video</a
-              >
+              >Req. Video</a>
               <a
-                *ngIf="
-                  instructor.optionalVideo ||
-                  (instructor.documents && instructor.documents.optionalVideo)
-                "
-                (click)="
-                  showMedia(
-                    instructor.optionalVideo,
-                    'optionalVideo',
-                    instructor
-                  )
-                "
+                *ngIf="instructor.optionalVideo || (instructor.documents && instructor.documents.optionalVideo)"
+                (click)="showMedia(instructor.optionalVideo, 'optionalVideo', instructor)"
                 class="text-indigo-600 hover:text-indigo-900 cursor-pointer"
-                >Opt. Video</a
-              >
+              >Opt. Video</a>
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-500">
-              {{ instructor.createdAt | date : "short" }}
-            </div>
+            <div class="text-sm text-gray-500">{{ instructor.createdAt | date : "short" }}</div>
           </td>
-          <td
-            class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-          >
-            <button
-              class="text-indigo-600 hover:text-indigo-900 mr-3"
-              (click)="approveInstructor(instructor._id)"
-            >
-              Approve
-            </button>
-            <button
-              class="text-red-600 hover:text-red-900"
-              (click)="initiateRejectInstructor(instructor._id)"
-            >
-              Reject
-            </button>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button class="text-indigo-600 hover:text-indigo-900 mr-3" (click)="approveInstructor(instructor._id)">Approve</button>
+            <button class="text-red-600 hover:text-red-900" (click)="initiateRejectInstructor(instructor._id)">Reject</button>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
 
+  <!-- Rejection Modal -->
+  <div *ngIf="selectedInstructorId" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <h3 class="text-lg font-semibold mb-4">Reject Instructor</h3>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Rejection Reason</label>
+        <select 
+          [(ngModel)]="rejectionReason" 
+          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          <option *ngFor="let reason of rejectionReasons" [value]="reason">{{ reason }}</option>
+        </select>
+      </div>
+      <div *ngIf="rejectionReason === 'Other'" class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Custom Reason</label>
+        <textarea 
+          [(ngModel)]="customRejectionReason" 
+          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" 
+          rows="3"></textarea>
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button 
+          (click)="rejectInstructor()" 
+          class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+          Confirm Reject
+        </button>
+        <button 
+          (click)="cancelReject()" 
+          class="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
-<!-- Add this below the table in users.component.html -->
-<div *ngIf="selectedInstructorId" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-  <div class="bg-white p-6 rounded-lg shadow-lg">
-    <h3 class="text-lg font-semibold mb-4">Reject Instructor</h3>
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700">Rejection Reason</label>
-      <select 
-        [(ngModel)]="rejectionReason" 
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-        <option *ngFor="let reason of rejectionReasons" [value]="reason">{{ reason }}</option>
-      </select>
-    </div>
-    <div *ngIf="rejectionReason === 'Other'" class="mb-4">
-      <label class="block text-sm font-medium text-gray-700">Custom Reason</label>
-      <textarea 
-        [(ngModel)]="customRejectionReason" 
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" 
-        rows="3"></textarea>
-    </div>
-    <div class="flex justify-end space-x-3">
-      <button 
-        (click)="rejectInstructor()" 
-        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-        Confirm Reject
-      </button>
-      <button 
-        (click)="cancelReject()" 
-        class="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400">
-        Cancel
-      </button>
+
+  <!-- Media Modal -->
+  <div *ngIf="showMediaModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-4 rounded-lg shadow-lg max-w-3xl w-full">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Media Preview</h3>
+        <button 
+          (click)="closeMediaModal()" 
+          class="text-gray-500 hover:text-gray-700">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex justify-center">
+        <img 
+          *ngIf="!isVideo && selectedMediaUrl" 
+          [src]="selectedMediaUrl" 
+          alt="Document" 
+          class="max-h-[70vh] max-w-full object-contain">
+        <video 
+          *ngIf="isVideo && selectedMediaUrl" 
+          [src]="selectedMediaUrl" 
+          controls 
+          class="max-h-[70vh] max-w-full">
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
   </div>
-</div>
-  <!-- Rest of the template (Rejection Reason Dropdown and Media Modal) remains unchanged -->
 </div>

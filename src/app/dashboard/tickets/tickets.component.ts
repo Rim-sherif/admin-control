@@ -1,4 +1,4 @@
-// tickets.component.ts (updated)
+// tickets.component.ts
 import { Component, OnInit } from '@angular/core';
 import { AdminService, Ticket, TicketsResponse } from '../../services/admin.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,16 +6,19 @@ import { TicketDialogComponent } from '../ticket-dialog/ticket-dialog.component'
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tickets',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, FormsModule],
   templateUrl: './tickets.component.html',
 })
 export class TicketsComponent implements OnInit {
   tickets: Ticket[] = [];
+  filteredTickets: Ticket[] = [];
   user: any;
+  selectedStatus: string = 'all';
 
   constructor(private adminService: AdminService, public dialog: MatDialog) {}
 
@@ -30,18 +33,31 @@ export class TicketsComponent implements OnInit {
         if (response.success && response.data) {
           this.tickets = response.data.tickets || [];
           this.user = response.data.user || null;
+          this.applyFilter();
         } else {
           console.error('Failed to fetch tickets:', response.message || 'Unknown error');
           this.tickets = [];
+          this.filteredTickets = [];
           this.user = null;
         }
       },
       error: (error) => {
         console.error('Error fetching tickets:', error);
         this.tickets = [];
+        this.filteredTickets = [];
         this.user = null;
       }
     });
+  }
+
+  applyFilter(): void {
+    if (this.selectedStatus === 'all') {
+      this.filteredTickets = [...this.tickets];
+    } else {
+      this.filteredTickets = this.tickets.filter(
+        (ticket) => ticket.status.toLowerCase() === this.selectedStatus
+      );
+    }
   }
 
   openTicketDialog(ticket: Ticket): void {

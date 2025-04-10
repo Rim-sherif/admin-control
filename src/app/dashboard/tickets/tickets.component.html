@@ -1,66 +1,98 @@
-<div class="container mx-auto py-6">
-  <h1 class="text-2xl font-semibold text-gray-800 mb-6 sm:text-3xl">Support Tickets</h1>
-  
-  <div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <!-- Mobile Scroll Container -->
-    <div class="overflow-x-auto">
+<div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+    <h1 class="text-3xl font-bold text-gray-900">Support Tickets</h1>
+    <div class="relative w-full sm:w-48">
+      <select 
+        [(ngModel)]="selectedStatus" 
+        (ngModelChange)="applyFilter()"
+        class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:border-transparent appearance-none"
+      >
+        <option value="all">All Statuses</option>
+        <option value="open">Open</option>
+        <option value="pending">Pending</option>
+        <option value="resolved">Resolved</option>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <!-- Desktop Table View -->
+    <div class="hidden sm:block overflow-x-auto">
       <table class="w-full text-left border-collapse">
-        <thead class="bg-gray-50">
-          <tr class="border-b">
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Subject</th>
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Message</th>
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden sm:table-cell">Status</th>
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden md:table-cell">Priority</th>
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base hidden lg:table-cell">Created At</th>
-            <th class="py-3 px-4 font-semibold text-gray-600 text-sm sm:text-base">Actions</th>
+        <thead class="bg-gray-100">
+          <tr class="border-b border-gray-200">
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Subject</th>
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Message</th>
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Status</th>
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Priority</th>
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Created At</th>
+            <th class="py-4 px-6 font-semibold text-gray-700 text-sm uppercase tracking-wide">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of tickets" class="border-b hover:bg-gray-50">
-            <td class="py-3 px-4 text-sm sm:text-base">{{ ticket.subject }}</td>
-            <td class="py-3 px-4 text-sm sm:text-base truncate max-w-[200px] sm:max-w-none">{{ ticket.message }}</td>
-            <td class="py-3 px-4 text-sm sm:text-base hidden sm:table-cell">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+          <tr *ngFor="let ticket of filteredTickets" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <td class="py-4 px-6 text-gray-900">{{ ticket.subject }}</td>
+            <td class="py-4 px-6 text-gray-600 truncate max-w-[300px]">{{ ticket.message }}</td>
+            <td class="py-4 px-6">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
                     [ngClass]="{
                       'bg-green-100 text-green-800': ticket.status === 'resolved',
                       'bg-yellow-100 text-yellow-800': ticket.status === 'pending',
                       'bg-red-100 text-red-800': ticket.status === 'open'
                     }">
-                {{ ticket.status }}
+                {{ ticket.status | titlecase }}
               </span>
             </td>
-            <td class="py-3 px-4 text-sm sm:text-base hidden md:table-cell">{{ ticket.priority }}</td>
-            <td class="py-3 px-4 text-sm sm:text-base hidden lg:table-cell">{{ ticket.createdAt | date: 'short' }}</td>
-            <td class="py-3 px-4">
+            <td class="py-4 px-6 text-gray-600">{{ ticket.priority | titlecase }}</td>
+            <td class="py-4 px-6 text-gray-600">{{ ticket.createdAt | date: 'medium' }}</td>
+            <td class="py-4 px-6">
               <button
                 (click)="openTicketDialog(ticket)"
-                class="w-full sm:w-auto bg-[#6b3fa0] text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[#a78bfa] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:ring-offset-2"
+                class="bg-[#6b3fa0] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#8b5cf6] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:ring-offset-2"
               >
-                View
+                View Details
               </button>
             </td>
+          </tr>
+          <tr *ngIf="filteredTickets.length === 0" class="border-b">
+            <td colspan="6" class="py-4 px-6 text-center text-gray-500">No tickets found</td>
           </tr>
         </tbody>
       </table>
     </div>
-    
-    <!-- Mobile Card View Alternative -->
+
+    <!-- Mobile Card View -->
     <div class="sm:hidden space-y-4 p-4">
-      <div *ngFor="let ticket of tickets" class="bg-gray-50 rounded-lg p-4 shadow-sm">
-        <div class="space-y-2">
-          <div><span class="font-semibold">Subject:</span> {{ ticket.subject }}</div>
-          <div><span class="font-semibold">Message:</span> {{ ticket.message }}</div>
-          <div><span class="font-semibold">Status:</span> {{ ticket.status }}</div>
-          <div><span class="font-semibold">Priority:</span> {{ ticket.priority }}</div>
-          <div><span class="font-semibold">Created:</span> {{ ticket.createdAt | date: 'short' }}</div>
+      <div *ngFor="let ticket of filteredTickets" class="bg-gray-50 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow">
+        <div class="space-y-3">
+          <div class="flex justify-between items-start">
+            <div><span class="font-semibold text-gray-700">Subject:</span> {{ ticket.subject }}</div>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': ticket.status === 'resolved',
+                    'bg-yellow-100 text-yellow-800': ticket.status === 'pending',
+                    'bg-red-100 text-red-800': ticket.status === 'open'
+                  }">
+              {{ ticket.status | titlecase }}
+            </span>
+          </div>
+          <div><span class="font-semibold text-gray-700">Message:</span> {{ ticket.message }}</div>
+          <div><span class="font-semibold text-gray-700">Priority:</span> {{ ticket.priority | titlecase }}</div>
+          <div><span class="font-semibold text-gray-700">Created:</span> {{ ticket.createdAt | date: 'medium' }}</div>
           <button
             (click)="openTicketDialog(ticket)"
-            class="w-full bg-[#6b3fa0] text-white px-3 py-1.5 rounded-md text-sm font-medium hover:bg-[#a78bfa] transition-colors duration-200"
+            class="w-full bg-[#6b3fa0] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#8b5cf6] transition-colors duration-200"
           >
-            View
+            View Details
           </button>
         </div>
       </div>
+      <div *ngIf="filteredTickets.length === 0" class="text-center text-gray-500 py-4">No tickets found</div>
     </div>
   </div>
 </div>
