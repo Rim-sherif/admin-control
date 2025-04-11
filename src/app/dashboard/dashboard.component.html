@@ -11,9 +11,9 @@
   <div
     [class.translate-x-0]="isSidebarOpen"
     [class.-translate-x-full]="!isSidebarOpen"
-    class="fixed lg:static lg:translate-x-0 z-10 w-72 h-full bg-[#410445] text-white transition-transform duration-300 ease-in-out shadow-xl"
+    class="fixed lg:static lg:translate-x-0 z-10 w-72 h-full bg-[#410445] text-white transition-transform duration-300 ease-in-out"
   >
-    <div
+    <!-- <div
       class="p-4 flex justify-between items-center border-b border-purple-700"
     >
       <div class="flex items-center space-x-2">
@@ -23,7 +23,7 @@
           <fa-icon [icon]="faShieldAlt" class="text-sm"></fa-icon>
         </div>
         <h1 class="text-xl font-bold">
-          Admin<span class="text-indigo-300">Pro</span>
+          Admin <span class="text-indigo-300"> Pro </span>
         </h1>
       </div>
       <button
@@ -32,7 +32,7 @@
       >
         <fa-icon [icon]="faTimes"></fa-icon>
       </button>
-    </div>
+    </div> -->
 
     <!-- User profile -->
     <div class="p-4 flex items-center space-x-3 border-b border-purple-700">
@@ -121,8 +121,8 @@
 
   <!-- Main Content -->
   <div class="flex-1 flex flex-col overflow-hidden">
-    <header class="bg-white shadow-sm">
-      <div class="px-6 py-4 flex items-center justify-between">
+    <header class="bg-[#410445] shadow-sm">
+      <div class="px-6 py-3 flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-800"></h2>
         <div class="flex items-center space-x-4">
           <div class="relative">
