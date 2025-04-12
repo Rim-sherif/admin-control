@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 export interface Instructor {
@@ -12,6 +10,7 @@ export interface Instructor {
   lastName: string;
   avatar: string;
   url: string;
+  imageLoaded?: boolean;
 }
 
 export interface Category {
@@ -40,6 +39,7 @@ export interface Course {
   updatedAt: string;
   instructor: Instructor;
   category: Category;
+  imageLoaded?: boolean;
 }
 
 @Component({
@@ -48,12 +48,11 @@ export interface Course {
   imports: [CommonModule, HttpClientModule, FormsModule , RouterModule],
   templateUrl: './courses.component.html',
 })
-export class CoursesComponent {
+export class CoursesComponent implements OnInit {
   activeTab: 'published' | 'requests' = 'published';
   searchTerm: string = '';
   publishedCourses: Course[] = [];
   courseRequests: Course[] = [];
-
 
   constructor(private http: HttpClient) {}
 
@@ -62,26 +61,45 @@ export class CoursesComponent {
       .subscribe(
         (data) => {
           this.publishedCourses = data.courses;
+          this.loadCourses();
         },
         (error) => {
           console.error('Error fetching courses:', error);
         }
       );
 
-
-      this.http.get<any>('http://localhost:5000/api/v1/course/allPending')
+    this.http.get<any>('http://localhost:5000/api/v1/course/allPending')
       .subscribe(
         (data) => {
           this.courseRequests = data.courses;
+          this.loadCourses();
         },
         (error) => {
           console.error('Error fetching pending courses:', error);
         }
       );
-
   }
-  
- 
+
+  loadCourses() {
+    this.publishedCourses = this.publishedCourses.map(course => ({
+      ...course,
+      imageLoaded: false,
+      instructor: {
+        ...course.instructor,
+        imageLoaded: false
+      }
+    }));
+
+    this.courseRequests = this.courseRequests.map(course => ({
+      ...course,
+      imageLoaded: false,
+      instructor: {
+        ...course.instructor,
+        imageLoaded: false
+      }
+    }));
+  }
+
   get filteredPublishedCourses(): Course[] {
     return this.publishedCourses.filter(course => 
       course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -95,6 +113,4 @@ export class CoursesComponent {
       course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
-
-
 }

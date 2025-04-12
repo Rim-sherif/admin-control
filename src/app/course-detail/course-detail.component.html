@@ -1,9 +1,26 @@
-<div *ngIf="course" class="p-6 bg-white rounded-xl shadow space-y-4">
+<!-- Loading State -->
+<div *ngIf="isLoading" class="flex justify-center items-center min-h-[400px]">
+  <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+</div>
+
+<!-- Course Content -->
+<div *ngIf="!isLoading && course" class="p-6 bg-white rounded-xl shadow space-y-4">
     <h1 class="text-2xl font-bold text-center text-gray-900 my-4 mb-6">{{ course.title }}</h1>
+    <p class="text-lg text-center text-gray-600 mb-4">{{ course.subTitle }}</p>
+
+    <!-- Level and Duration Info -->
+    <div class="flex justify-between items-center mb-6">
+      <span class="text-sm text-gray-700">
+        <strong>Level:</strong> {{ course.level | titlecase }}
+      </span>
+      <span class="text-sm text-gray-700">
+        <strong>Total Duration:</strong> {{ course.totalDuration | number:'1.0-0' }} minutes
+      </span>
+    </div>
 
     <img 
       class="w-full h-auto rounded-2xl object-cover mb-6"
-      [src]="course.url" 
+      [src]="course.thumbnail" 
       alt="Course Thumbnail"
     />
   
@@ -32,7 +49,10 @@
   
     <div class="mb-3">
       <p class="text-sm text-gray-800">
-        <strong>Instructor:</strong> {{ course.instructor.firstName }} {{ course.instructor.lastName }}
+        <strong>Instructor:</strong> 
+        <ng-container *ngIf="course.instructorId">
+          {{ course.instructorId.firstName }} {{ course.instructorId.lastName }}
+        </ng-container>
       </p>
     </div>
   
@@ -44,10 +64,40 @@
         </span>
       </p>
     </div>
+
+    <!-- Course Sections -->
+    <div class="mt-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Course Content ({{sections.length}} sections)</h2>
+      <div class="space-y-4">
+        <div *ngFor="let section of sections" class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-medium text-gray-800">Section {{section.order}}: {{section.title}}</h3>
+            <span class="text-sm text-gray-600">
+              {{ section.totalVideos }} videos • {{ section.totalDuration | number:'1.0-0' }} minutes
+            </span>
+          </div>
+          
+          <!-- Videos in Section -->
+          <div class="ml-4 space-y-2">
+            <div *ngFor="let video of getVideosForSection(section._id)" 
+                 class="flex items-center justify-between py-2">
+              <div class="flex items-center space-x-2">
+                <span class="text-gray-700">{{ video.title }}</span>
+                <span *ngIf="video.status === 'approved'" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                  Approved
+                </span>
+              </div>
+              <span class="text-sm text-gray-600">{{ video.duration | number:'1.0-0' }} min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   <div 
-  class="flex justify-end text-sm gap-3"
-  *ngIf="course?.status !== 'approved'"
->
+    class="flex justify-end text-sm gap-3 mt-6"
+    *ngIf="course?.status !== 'approved'"
+  >
   <button (click)="approveCourse()" class="bg-green-600 text-white py-3 px-4 font-semibold rounded">
     Approved
   </button>
@@ -56,4 +106,9 @@
   </button>
 </div>
 
+</div>
+
+<!-- Error State -->
+<div *ngIf="!isLoading && !course" class="text-center p-6">
+  <p class="text-gray-600">Course not found or error loading course details.</p>
 </div>

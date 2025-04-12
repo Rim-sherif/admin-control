@@ -36,24 +36,20 @@
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <li *ngFor="let course of filteredPublishedCourses" class="py-4 hover:bg-gray-50">
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-          <img 
-            class="w-full h-48 p-4 rounded-3xl object-cover"
-            [src]="course.url" 
-            alt="Course Thumbnail"
-          />
+          <div class="relative w-full h-48 p-4">
+            <div *ngIf="!course.imageLoaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded-3xl"></div>
+            <img 
+              class="w-full h-full rounded-3xl object-cover"
+              [src]="course.url" 
+              [class.opacity-0]="!course.imageLoaded"
+              (load)="course.imageLoaded = true"
+              alt="Course Thumbnail"
+            />
+          </div>
         
           <div class="p-4 space-y-3">
-            <h2 class="text-xl font-bold text-gray-800">{{ course.title.split(" ").slice(0,3).join(" ") }}</h2>
-            <div class="flex items-center gap-2 mt-2">
-              <img
-                class="w-8 h-8 rounded-full object-cover"
-                [src]="course.instructor.url"
-                alt="Instructor Avatar"
-              />
-              <span class="text-sm font-medium text-gray-700">
-                {{ course.instructor.firstName }} {{ course.instructor.lastName }}
-              </span>
-            </div>
+            <h3 class="text-xl font-semibold text-gray-800">{{ course.title.split(" ").slice(0,2).join(" ") }}</h3>
+           
         
             <div class="flex justify-between items-center mt-4">
               <span class="text-green-600 font-semibold">
@@ -70,10 +66,25 @@
                 {{ course.category.title }}
               </span>
             </div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="relative w-8 h-8">
+                <div *ngIf="!course.instructor.imageLoaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded-full"></div>
+                <img
+                  class="w-full h-full rounded-full object-cover"
+                  [src]="course.instructor.url"
+                  [class.opacity-0]="!course.instructor.imageLoaded"
+                  (load)="course.instructor.imageLoaded = true"
+                  alt="Instructor Avatar"
+                />
+              </div>
+              <span class="text-sm font-medium text-gray-700">
+                {{ course.instructor.firstName }} {{ course.instructor.lastName }}
+              </span>
+            </div>
         
             <a
               [routerLink]="['/dashboard/courses', course._id]"
-              class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
+              class="block mt-4 text-center bg-[#410445] hover:bg-[#2c0d2e] text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
               Show Course
             </a>
           </div>
@@ -87,20 +98,30 @@
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <li *ngFor="let course of filteredCourseRequests()" class="py-4 hover:bg-gray-50">
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
-          <img 
-            class="w-full h-48 p-4 rounded-3xl object-cover"
-            [src]="course.url" 
-            alt="Course Thumbnail"
-          />
+          <div class="relative w-full h-48 p-4">
+            <div *ngIf="!course.imageLoaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded-3xl"></div>
+            <img 
+              class="w-full h-full rounded-3xl object-cover"
+              [src]="course.url" 
+              [class.opacity-0]="!course.imageLoaded"
+              (load)="course.imageLoaded = true"
+              alt="Course Thumbnail"
+            />
+          </div>
         
           <div class="p-4 space-y-3">
             <h2 class="text-xl font-bold text-gray-800">{{ course.title.split(" ").slice(0,3).join(" ") }}</h2>
             <div class="flex items-center gap-2 mt-2">
-              <img
-                class="w-8 h-8 rounded-full object-cover"
-                [src]="course.instructor.url"
-                alt="Instructor Avatar"
-              />
+              <div class="relative w-8 h-8">
+                <div *ngIf="!course.instructor.imageLoaded" class="absolute inset-0 bg-gray-200 animate-pulse rounded-full"></div>
+                <img
+                  class="w-full h-full rounded-full object-cover"
+                  [src]="course.instructor.url"
+                  [class.opacity-0]="!course.instructor.imageLoaded"
+                  (load)="course.instructor.imageLoaded = true"
+                  alt="Instructor Avatar"
+                />
+              </div>
               <span class="text-sm font-medium text-gray-700">
                 {{ course.instructor.firstName }} {{ course.instructor.lastName }}
               </span>
@@ -124,7 +145,7 @@
         
             <a
               [routerLink]="[course._id]"
-              class="block mt-4 text-center bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
+              class="block mt-4 text-center bg-[#410445] hover:bg-[#2c0d2e] text-white text-sm font-semibold py-2 rounded-xl transition duration-300">
               Show Course
             </a>
           </div>

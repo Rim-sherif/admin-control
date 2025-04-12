@@ -54,13 +54,23 @@ export class AuthService {
       { withCredentials: true }
     ).pipe(
       tap((response) => {
-        if (response.success) {
+        if (response.success ) {
           // Store user data in localStorage
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          this.isAuthenticatedSubject.next(true);
-          this.userSubject.next(response.user);
-          const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
-          this.router.navigateByUrl(returnUrl);
+          if (response.user.role == 'admin') {
+            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            this.isAuthenticatedSubject.next(true);
+            this.userSubject.next(response.user);
+            const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
+            this.router.navigateByUrl(returnUrl);
+          }else{
+            // Handle non-admin user login
+            this.isAuthenticatedSubject.next(false);
+            this.userSubject.next(null);
+            this.router.navigate(['/login'], { queryParams: { error: 'Unauthorized access' } });
+          }
+
+    
+          
         }
       })
     );

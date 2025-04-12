@@ -1,12 +1,49 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { ToastrModule } from 'ngx-toastr';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 
+interface Section {
+  _id: string;
+  title: string;
+  totalVideos: number;
+  totalDuration: number;
+  order: number;
+  status: string;
+}
+
+interface Video {
+  _id: string;
+  sectionId: string;
+  title: string;
+  duration: string;
+  videoUrl: string;
+  status: string;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+  subTitle: string;
+  description: string;
+  price: number;
+  access_type: string;
+  level: string;
+  totalDuration: number;
+  url: string;
+  thumbnail: string;
+  learningPoints: string[];
+  requirements: string[];
+  status: string;
+  instructorId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
 
 @Component({
   selector: 'app-course-detail',
@@ -17,25 +54,38 @@ import Swal from 'sweetalert2';
 })
 export class CourseDetailComponent implements OnInit {
   courseId: string = '';
-  course: any; 
+  course: Course | null = null;
+  sections: Section[] = [];
+  videos: Video[] = [];
+  isLoading = false;
 
   constructor(private route: ActivatedRoute, private http: HttpClient ,private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.courseId = this.route.snapshot.paramMap.get('id') || '';
-    this.fetchCourse();
+    this.loadCourseDetails();
   }
 
-  fetchCourse() {
-    this.http.get(`http://localhost:5000/api/v1/course/${this.courseId}`)
-      .subscribe(
-        (data: any) => {
-          this.course = data.course;
+  loadCourseDetails() {
+    this.isLoading = true;
+    this.http.get(`http://localhost:5000/api/v1/admin/verificationDetails/${this.courseId}`, { withCredentials: true })
+      .subscribe({
+        next: (response: any) => {
+          if (response?.data) {
+            this.course = response.data.course;
+            this.sections = response.data.sections;
+            this.videos = response.data.videos;
+          } else {
+            this.toastr.error('Failed to load course details');
+          }
+          this.isLoading = false;
         },
-        (error) => {
-          console.error('Error fetching course details:', error);
+        error: (error) => {
+          console.error('Error loading course details:', error);
+          this.toastr.error('Failed to load course details');
+          this.isLoading = false;
         }
-      );
+      });
   }
 
   approveCourse() {
@@ -90,4 +140,7 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
+  getVideosForSection(sectionId: string): Video[] {
+    return this.videos.filter(video => video.sectionId === sectionId);
+  }
 }
