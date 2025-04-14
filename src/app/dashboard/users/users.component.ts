@@ -1,4 +1,3 @@
-// src/app/users/users.component.ts
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
@@ -54,31 +53,35 @@ export class UsersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Only load instructors if authenticated
     if (this.authService.isAuthenticated()) {
       this.loadAllInstructors();
     } else {
       console.warn('User not authenticated. Redirecting to login...');
       this.authService.logout();
-      // Optionally add navigation: this.router.navigate(['/login']);
-      // Requires injecting Router and adding it to imports if used
     }
   }
 
   loadAllInstructors(): void {
     this.adminService.getAllInstructors().subscribe({
       next: (response) => {
-        this.instructors = response.data;
+        this.instructors = response.data.map((instructor: LocalInstructor) => ({
+          ...instructor,
+          verificationStatus: this.normalizeStatus(instructor.verificationStatus)
+        }));
         this.applyFilter();
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error fetching all instructors:', error);
         if (error.status === 401 || error.status === 400) {
           this.authService.logout();
-          // Optionally redirect: this.router.navigate(['/login']);
         }
       },
     });
+  }
+
+  private normalizeStatus(status: string): string {
+    const validStatuses = ['approved', 'rejected', 'pending'];
+    return validStatuses.includes(status.toLowerCase()) ? status.toLowerCase() : 'pending';
   }
 
   applyFilter(): void {
@@ -145,6 +148,7 @@ export class UsersComponent implements OnInit {
     this.rejectionReason = '';
     this.customRejectionReason = '';
   }
+
   showMedia(
     url: string | undefined,
     type: string,
@@ -180,7 +184,7 @@ export class UsersComponent implements OnInit {
   private updateInstructorStatus(instructorId: string, status: string): void {
     const instructor = this.instructors.find((i) => i._id === instructorId);
     if (instructor) {
-      instructor.verificationStatus = status;
+      instructor.verificationStatus = this.normalizeStatus(status);
     }
   }
 }

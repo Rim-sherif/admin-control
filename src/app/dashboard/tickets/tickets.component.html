@@ -1,16 +1,17 @@
-<div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+<div class="container mx-auto py-8">
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
     <h1 class="text-3xl font-bold text-gray-900">Support Tickets</h1>
     <div class="relative w-full sm:w-48">
       <select 
         [(ngModel)]="selectedStatus" 
         (ngModelChange)="applyFilter()"
-        class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:border-transparent appearance-none"
+        class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#410445] focus:border-transparent appearance-none"
       >
         <option value="all">All Statuses</option>
         <option value="open">Open</option>
-        <option value="pending">Pending</option>
+        <option value="in_progress">In Progress</option>
         <option value="resolved">Resolved</option>
+        <option value="closed">Closed</option>
       </select>
       <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,8 +42,8 @@
             <td class="py-4 px-6">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
                     [ngClass]="{
-                      'bg-green-100 text-green-800': ticket.status === 'resolved',
-                      'bg-yellow-100 text-yellow-800': ticket.status === 'pending',
+                      'bg-green-100 text-green-800': ticket.status === 'resolved' || ticket.status === 'closed',
+                      'bg-yellow-100 text-yellow-800': ticket.status === 'in_progress',
                       'bg-red-100 text-red-800': ticket.status === 'open'
                     }">
                 {{ ticket.status | titlecase }}
@@ -53,7 +54,7 @@
             <td class="py-4 px-6">
               <button
                 (click)="openTicketDialog(ticket)"
-                class="bg-[#6b3fa0] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#8b5cf6] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#6b3fa0] focus:ring-offset-2"
+                class="bg-[#410445] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#5e0b66] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#410445] focus:ring-offset-2"
               >
                 View Details
               </button>
@@ -74,8 +75,8 @@
             <div><span class="font-semibold text-gray-700">Subject:</span> {{ ticket.subject }}</div>
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
                   [ngClass]="{
-                    'bg-green-100 text-green-800': ticket.status === 'resolved',
-                    'bg-yellow-100 text-yellow-800': ticket.status === 'pending',
+                    'bg-green-100 text-green-800': ticket.status === 'resolved' || ticket.status === 'closed',
+                    'bg-yellow-100 text-yellow-800': ticket.status === 'in_progress',
                     'bg-red-100 text-red-800': ticket.status === 'open'
                   }">
               {{ ticket.status | titlecase }}
@@ -86,7 +87,7 @@
           <div><span class="font-semibold text-gray-700">Created:</span> {{ ticket.createdAt | date: 'medium' }}</div>
           <button
             (click)="openTicketDialog(ticket)"
-            class="w-full bg-[#6b3fa0] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#8b5cf6] transition-colors duration-200"
+            class="w-full bg-[#410445] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#5e0b66] transition-colors duration-200"
           >
             View Details
           </button>

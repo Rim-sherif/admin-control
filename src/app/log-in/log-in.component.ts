@@ -14,6 +14,7 @@ import { AuthService } from '../services/auth.service';
 export class LogInComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
+  showAdminError: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -33,13 +34,22 @@ export class LogInComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
+      this.showAdminError = false;
+      this.errorMessage = '';
       this.authService.login(email, password).subscribe({
         next: (response) => {
           this.errorMessage = '';
+          this.showAdminError = false;
           // Redirect is handled in AuthService
         },
         error: (error) => {
-          this.errorMessage = error.error?.message || 'Invalid email or password';
+          if (error.code === 'non_admin_user') {
+            this.showAdminError = true;
+            this.errorMessage = '';
+          } else {
+            this.showAdminError = false;
+            this.errorMessage = error.message || 'Invalid email or password';
+          }
         }
       });
     }
