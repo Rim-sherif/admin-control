@@ -45,7 +45,7 @@ export interface Course {
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule , RouterModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, RouterModule],
   templateUrl: './courses.component.html',
 })
 export class CoursesComponent implements OnInit {
@@ -71,7 +71,8 @@ export class CoursesComponent implements OnInit {
         }
       );
 
-    this.http.get<any>('http://localhost:5000/api/v1/course/allPending')
+    this.http
+      .get<any>('http://localhost:5000/api/v1/course/allPending')
       .subscribe(
         (data) => {
           this.courseRequests = data.courses;
@@ -84,36 +85,38 @@ export class CoursesComponent implements OnInit {
   }
 
   loadCourses() {
-    this.publishedCourses = this.publishedCourses.map(course => ({
+    this.publishedCourses = this.publishedCourses.map((course) => ({
       ...course,
       imageLoaded: false,
       instructor: {
         ...course.instructor,
-        imageLoaded: false
-      }
+        imageLoaded: false,
+      },
     }));
 
-    this.courseRequests = this.courseRequests.map(course => ({
+    this.courseRequests = this.courseRequests.map((course) => ({
       ...course,
       imageLoaded: false,
       instructor: {
         ...course.instructor,
-        imageLoaded: false
-      }
+        imageLoaded: false,
+      },
     }));
   }
 
   get filteredPublishedCourses(): Course[] {
-    return this.publishedCourses.filter(course =>
-      course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.publishedCourses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   filteredCourseRequests(): Course[] {
-    return this.courseRequests.filter(course =>
-      course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.courseRequests.filter(
+      (course) =>
+        course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 }
