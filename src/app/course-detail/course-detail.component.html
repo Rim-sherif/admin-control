@@ -1,114 +1,173 @@
 <!-- Loading State -->
-<div *ngIf="isLoading" class="flex justify-center items-center min-h-[400px]">
-  <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-</div>
+<ng-container *ngIf="isLoading">
+  <div class="flex justify-center items-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
+</ng-container>
+
+<!-- Error State -->
+<ng-container *ngIf="!isLoading && !course">
+  <div class="text-center p-6 bg-red-50 rounded-lg max-w-2xl mx-auto">
+    <p class="text-red-600 font-medium">Course not found or error loading course details.</p>
+  </div>
+</ng-container>
 
 <!-- Course Content -->
-<div *ngIf="!isLoading && course" class="p-6 bg-white rounded-xl shadow space-y-4">
-    <h1 class="text-2xl font-bold text-center text-gray-900 my-4 mb-6">{{ course.title }}</h1>
-    <p class="text-lg text-center text-gray-600 mb-4">{{ course.subTitle }}</p>
+<article *ngIf="!isLoading && course" class="bg-white rounded-xl shadow-lg max-w-7xl mx-auto">
+  <header class="relative">
+    <div class="h-96 w-full overflow-hidden rounded-t-xl">
+      <img [src]="course.thumbnail" 
+           alt="Course thumbnail"
+           class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300" />
+    </div>
+    
+   
+  </header>
+  <div class="flex items-center gap-4 p-6 ">
+    <div class="text-black ">
+      <h2 class="text-2xl font-bold mb-2">{{ course.title }}</h2>
+      <p class="text-lg opacity-90">{{ course.subTitle }}</p>
+    </div>
+  </div>
 
-    <!-- Level and Duration Info -->
-    <div class="flex justify-between items-center mb-6">
-      <span class="text-sm text-gray-700">
-        <strong>Level:</strong> {{ course.level | titlecase }}
-      </span>
-      <span class="text-sm text-gray-700">
-        <strong>Total Duration:</strong> {{ course.totalDuration | number:'1.0-0' }} minutes
-      </span>
-    </div>
 
-    <img 
-      class="w-full h-auto rounded-2xl object-cover mb-6"
-      [src]="course.thumbnail" 
-      alt="Course Thumbnail"
-    />
-  
-    <div class="mb-6">
-      <h2 class="text-2xl font-semibold text-gray-800">Description</h2>
-      <p class="text-[14px] leading-relaxed text-gray-600">{{ course.description }}</p>
-    </div>
-  
-    <div class="learning-points mb-6">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-3">Learning Points</h2>
-      <ul class="space-y-2">
-        <li *ngFor="let point of course.learningPoints" class="text-sm text-gray-700">
-          {{ point }}
-        </li>
-      </ul>
-    </div>
-  
-    <div class="learning-points mb-6">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-3">Requirements</h2>
-      <ul class="space-y-2 text-sm text-gray-700">
-        <li *ngFor="let point of course.requirements">
-          {{ point }}
-        </li>
-      </ul>
-    </div>
-  
-    <div class="mb-3">
-      <p class="text-sm text-gray-800">
-        <strong>Instructor:</strong> 
-        <ng-container *ngIf="course.instructorId">
-          {{ course.instructorId.firstName }} {{ course.instructorId.lastName }}
-        </ng-container>
-      </p>
-    </div>
-  
-    <div>
-      <p class="text-sm text-gray-800">
-        <strong>Price:</strong> 
-        <span class="font-semibold">
-          {{ course.access_type === 'free' ? 'Free' : '$' + course.price }}
-        </span>
-      </p>
-    </div>
+  <div class="grid md:grid-cols-3 gap-8 p-6 text-sm">
+    <!-- Main Content -->
+    <div class="md:col-span-2 space-y-8">
+      <section class="bg-gray-50 p-6 rounded-xl">
+        <h2 class="text-xl font-semibold mb-4">Description</h2>
+        <p class="text-gray-700 leading-relaxed" [class.line-clamp-3]="!isDescriptionExpanded">
+          {{ course.description }}
+        </p>
+        <button 
+          (click)="toggleDescription()" 
+          class="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2">
+          {{ isDescriptionExpanded ? 'Show Less' : 'Show More' }}
+        </button>
+      </section>
 
-    <!-- Course Sections -->
-    <div class="mt-8">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Course Content ({{sections.length}} sections)</h2>
-      <div class="space-y-4">
-        <div *ngFor="let section of sections" class="bg-gray-50 p-4 rounded-lg">
-          <div class="flex justify-between items-center mb-2">
-            <h3 class="text-lg font-medium text-gray-800">Section {{section.order}}: {{section.title}}</h3>
-            <span class="text-sm text-gray-600">
-              {{ section.totalVideos }} videos • {{ section.totalDuration | number:'1.0-0' }} minutes
-            </span>
-          </div>
-          
-          <!-- Videos in Section -->
-          <div class="ml-4 space-y-2">
-            <div *ngFor="let video of getVideosForSection(section._id)" 
-                 class="flex items-center justify-between py-2">
-              <div class="flex items-center space-x-2">
-                <span class="text-gray-700">{{ video.title }}</span>
-                <span *ngIf="video.status === 'approved'" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                  Approved
-                </span>
+      <section class="space-y-8 text-sm">
+        <div class="bg-gray-50 p-6 rounded-xl">
+          <h2 class="text-xl font-semibold mb-4">Learning Points</h2>
+          <ul class="space-y-2">
+            <li *ngFor="let point of course.learningPoints" 
+                class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-green-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>{{ point }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-xl">
+          <h2 class="text-xl font-semibold mb-4">Requirements</h2>
+          <ul class="space-y-2">
+            <li *ngFor="let point of course.requirements"
+                class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>{{ point }}</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Course Sections -->
+      <section class="space-y-4">
+        <h2 class="text-xl font-semibold">Course Content ({{ sections.length }} sections)</h2>
+        <div class="space-y-4">
+          <div *ngFor="let section of sections" 
+               class="bg-gray-50 rounded-xl overflow-hidden">
+            <div class="p-4 bg-gray-100 cursor-pointer hover:bg-gray-200" (click)="toggleSection(section._id)">
+              <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg">Section {{ section.order }}: {{ section.title }}</h3>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-600">
+                    {{ section.totalVideos }} videos • {{ section.totalDuration | number:'1.0-0' }} min
+                  </span>
+                  <svg class="w-5 h-5 transition-transform" [class.rotate-180]="isSectionOpen(section._id)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
-              <span class="text-sm text-gray-600">{{ video.duration | number:'1.0-0' }} min</span>
+            </div>
+            <div class="divide-y divide-gray-200" [class.hidden]="!isSectionOpen(section._id)">
+              <div *ngFor="let video of getVideosForSection(section._id)" 
+                   class="p-4 hover:bg-gray-100 transition-colors cursor-pointer"
+                   (click)="playVideo(video)">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>{{ video.title }}</span>
+                  </div>
+                  <span class="text-sm text-gray-600">{{ video.duration | number:'1.0-0' }} min</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
-  <div 
-    class="flex justify-end text-sm gap-3 mt-6"
-    *ngIf="course?.status !== 'approved'"
-  >
-  <button (click)="approveCourse()" class="bg-green-600 text-white py-3 px-4 font-semibold rounded">
-    Approved
-  </button>
-  <button (click)="rejectCourse()" class="bg-red-700 text-white py-3 px-6 font-semibold rounded">
-    Reject
-  </button>
-</div>
+    <!-- Sidebar -->
+    <div class="md:col-span-1">
+      <div class="bg-gray-50 p-6 rounded-xl sticky top-6 space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <div>
+              <p class="text-sm text-gray-500">Instructor</p>
+              <p class="font-medium">{{ course.instructorId?.firstName }} {{ course.instructorId?.lastName }}</p>
+            </div>
+          </div>
 
-</div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+              <p class="text-sm text-gray-500">Price</p>
+              <p class="font-medium">{{ course.access_type === 'free' ? 'Free' : '$' + course.price }}</p>
+            </div>
+          </div>
 
-<!-- Error State -->
-<div *ngIf="!isLoading && !course" class="text-center p-6">
-  <p class="text-gray-600">Course not found or error loading course details.</p>
-</div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2-2z"></path>
+            </svg>
+            <div>
+              <p class="text-sm text-gray-500">Level</p>
+              <p class="font-medium">{{ course.level | titlecase }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="course?.status !== 'approved'" class="space-y-3">
+          <button (click)="approveCourse()" 
+                  class="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+            Approve Course
+          </button>
+          <button (click)="rejectCourse()" 
+                  class="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+            Reject Course
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- Add video modal at the bottom of the template -->
+<app-video-modal 
+  *ngIf="selectedVideo"
+  [videoUrl]="selectedVideo.videoUrl"
+  [isOpen]="isVideoModalOpen"
+  (close)="closeVideoModal()">
+</app-video-modal>
