@@ -175,5 +175,40 @@
         </div>
       </div>
     </div>
+
+    <!-- Top Courses Section -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Top Courses</h2>
+      <div *ngIf="!topCourses" class="text-center py-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+        <p class="mt-2 text-gray-600">Loading courses...</p>
+      </div>
+      <div *ngIf="topCourses && topCourses.length === 0" class="text-center py-4">
+        <p class="text-gray-600">No courses found</p>
+      </div>
+      <div *ngIf="topCourses && topCourses.length > 0" class="space-y-4">
+        <div *ngFor="let course of topCourses" class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+          <img [src]="course.url" [alt]="course.title" class="w-16 h-16 object-cover rounded">
+          <div class="flex-1">
+            <h3 class="font-medium">{{course.title}}</h3>
+            <p class="text-sm text-gray-600">{{course.instructor?.firstName}} {{course.instructor?.lastName}}</p>
+            <div class="flex items-center justify-between mt-1">
+              <div class="flex items-center">
+                <fa-icon [icon]="faStar" class="text-yellow-400 mr-1"></fa-icon>
+                <span class="text-sm">{{course.rating || 0}}</span>
+              </div>
+              <div class="flex items-center">
+                <fa-icon [icon]="faUsers" class="text-gray-400 mr-1"></fa-icon>
+                <span class="text-sm">{{course.purchaseCount}} students</span>
+              </div>
+              <div class="flex items-center">
+                <fa-icon [icon]="faMoneyBill" class="text-green-400 mr-1"></fa-icon>
+                <span class="text-sm">${{course.price}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </main>

@@ -57,7 +57,10 @@ export class CoursesComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get<any>('http://localhost:5000/api/v1/course/all')
+    this.http
+      .get<any>(
+        'http://localhost:5000/api/v1/course/all&sort=purchaseCount:desc'
+      )
       .subscribe(
         (data) => {
           this.publishedCourses = data.courses;
@@ -101,14 +104,14 @@ export class CoursesComponent implements OnInit {
   }
 
   get filteredPublishedCourses(): Course[] {
-    return this.publishedCourses.filter(course => 
+    return this.publishedCourses.filter(course =>
       course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   filteredCourseRequests(): Course[] {
-    return this.courseRequests.filter(course => 
+    return this.courseRequests.filter(course =>
       course.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       course.description.toLowerCase().includes(this.searchTerm.toLowerCase())
     );

@@ -7,6 +7,8 @@ import {
   faGraduationCap,
   faMoneyBill,
   faUsers,
+  faStar,
+  faClock,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -21,6 +23,8 @@ export class OverviewComponent implements OnInit {
   faUsers = faUsers;
   faGraduationCap = faGraduationCap;
   faMoneyBill = faMoneyBill;
+  faStar = faStar;
+  faClock = faClock;
 
   dashboardData: any = {
     approvedCourse: 0,
@@ -38,12 +42,14 @@ export class OverviewComponent implements OnInit {
   approvedInstructors: number = 0;
   rejectedInstructors: number = 0;
   averageRating: number = 0;
+  topCourses: any[] = [];
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
     this.loadInstructorsData();
+    this.loadTopCourses();
   }
 
   loadDashboardData(): void {
@@ -69,6 +75,41 @@ export class OverviewComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading instructors data:', error);
+      },
+    });
+  }
+
+  loadTopCourses(): void {
+    console.log('Starting to load top courses...');
+    this.dashboardService.getTopCourses().subscribe({
+      next: (response) => {
+        console.log('Top Courses API Response:', response);
+        console.log('Response Type:', typeof response);
+        console.log('Is Response an Object:', response instanceof Object);
+        console.log('Response Keys:', Object.keys(response));
+
+        if (response.success) {
+          console.log(
+            'Success is true, setting topCourses to:',
+            response.courses
+          );
+          this.topCourses = response.courses;
+          console.log('topCourses after setting:', this.topCourses);
+        } else {
+          console.log('Success is false, response:', response);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading top courses:', error);
+        console.error('Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          error: error.error,
+        });
+      },
+      complete: () => {
+        console.log('Top courses API call completed');
       },
     });
   }

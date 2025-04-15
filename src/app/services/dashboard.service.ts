@@ -22,4 +22,11 @@ export class DashboardService {
       { withCredentials: true }
     );
   }
+
+  getTopCourses(): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/course/all?page=1&size=5&sort=purchaseCount:desc&select=title,price,purchaseCount,thumbnail,instructor`,
+      { withCredentials: true }
+    );
+  }
 }
