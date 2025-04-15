@@ -34,10 +34,16 @@ export class OverviewComponent implements OnInit {
     totalInstructorEarnings: 0,
   };
 
+  instructors: any[] = [];
+  approvedInstructors: number = 0;
+  rejectedInstructors: number = 0;
+  averageRating: number = 0;
+
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadInstructorsData();
   }
 
   loadDashboardData(): void {
@@ -51,5 +57,39 @@ export class OverviewComponent implements OnInit {
         console.error('Error loading dashboard data:', error);
       },
     });
+  }
+
+  loadInstructorsData(): void {
+    this.dashboardService.getAllInstructors().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.instructors = response.data;
+          this.calculateInstructorStats();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading instructors data:', error);
+      },
+    });
+  }
+
+  calculateInstructorStats(): void {
+    this.approvedInstructors = this.instructors.filter(
+      (instructor) => instructor.verificationStatus === 'approved'
+    ).length;
+    this.rejectedInstructors = this.instructors.filter(
+      (instructor) => instructor.verificationStatus === 'rejected'
+    ).length;
+
+    const instructorsWithRating = this.instructors.filter(
+      (instructor) => instructor.rating > 0
+    );
+    if (instructorsWithRating.length > 0) {
+      this.averageRating =
+        instructorsWithRating.reduce(
+          (sum, instructor) => sum + instructor.rating,
+          0
+        ) / instructorsWithRating.length;
+    }
   }
 }
