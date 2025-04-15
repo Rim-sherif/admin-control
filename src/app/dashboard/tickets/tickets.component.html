@@ -36,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of filteredTickets" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+          <tr *ngFor="let ticket of filteredTickets" class="border-b border-gray-100 hover:bg-gray-50 transition-colors text-sm">
             <td class="py-4 px-6 text-gray-900">{{ ticket.subject }}</td>
             <td class="py-4 px-6 text-gray-600 truncate max-w-[300px]">{{ ticket.message }}</td>
             <td class="py-4 px-6">

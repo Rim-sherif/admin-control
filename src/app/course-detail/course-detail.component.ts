@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { VideoModalComponent } from '../shared/video-modal.component';
 
 interface Section {
   _id: string;
@@ -48,7 +49,7 @@ interface Course {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, RouterModule],
+  imports: [CommonModule, HttpClientModule, RouterModule, VideoModalComponent],
   templateUrl: './course-detail.component.html',
   styleUrls: ['./course-detail.component.css']
 })
@@ -58,6 +59,10 @@ export class CourseDetailComponent implements OnInit {
   sections: Section[] = [];
   videos: Video[] = [];
   isLoading = false;
+  isDescriptionExpanded = false;
+  selectedVideo: Video | null = null;
+  isVideoModalOpen = false;
+  openSections: Set<string> = new Set();
 
   constructor(private route: ActivatedRoute, private http: HttpClient ,private toastr: ToastrService) {}
 
@@ -75,6 +80,10 @@ export class CourseDetailComponent implements OnInit {
             this.course = response.data.course;
             this.sections = response.data.sections;
             this.videos = response.data.videos;
+            // Open first section by default
+            if (this.sections.length > 0) {
+              this.openSections.add(this.sections[0]._id);
+            }
           } else {
             this.toastr.error('Failed to load course details');
           }
@@ -140,7 +149,33 @@ export class CourseDetailComponent implements OnInit {
     });
   }
 
+  toggleDescription() {
+    this.isDescriptionExpanded = !this.isDescriptionExpanded;
+  }
+
   getVideosForSection(sectionId: string): Video[] {
     return this.videos.filter(video => video.sectionId === sectionId);
+  }
+
+  playVideo(video: Video) {
+    this.selectedVideo = video;
+    this.isVideoModalOpen = true;
+  }
+
+  closeVideoModal() {
+    this.isVideoModalOpen = false;
+    this.selectedVideo = null;
+  }
+
+  toggleSection(sectionId: string) {
+    if (this.openSections.has(sectionId)) {
+      this.openSections.delete(sectionId);
+    } else {
+      this.openSections.add(sectionId);
+    }
+  }
+
+  isSectionOpen(sectionId: string): boolean {
+    return this.openSections.has(sectionId);
   }
 }

@@ -50,21 +50,24 @@ export class AuthService {
       .post<LoginResponse>('http://localhost:5000/api/v1/auth/login', { email, password }, { withCredentials: true })
       .pipe(
         tap((response) => {
-          if (response.success) {
-            if (response.user.role === 'admin') {
-              localStorage.setItem('currentUser', JSON.stringify(response.user));
-              this.isAuthenticatedSubject.next(true);
-              this.userSubject.next(response.user);
-              const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
-              this.router.navigateByUrl(returnUrl);
-            } else {
-              throw new Error('non_admin_user');
-            }
+          if (!response.success) {
+            throw new Error(response.message || 'Login failed');
           }
+          if (response.user.role !== 'admin') {
+            throw new Error('non_admin_user');
+          }
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.isAuthenticatedSubject.next(true);
+          this.userSubject.next(response.user);
+          const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
+          this.router.navigateByUrl(returnUrl);
         }),
         catchError((error) => {
           if (error.message === 'non_admin_user') {
-            return throwError(() => ({ message: 'Only admins can access this portal', code: 'non_admin_user' }));
+            return throwError(() => ({
+              message: 'Only admins can access this portal',
+              code: 'non_admin_user'
+            }));
           }
           return throwError(() => error);
         })
@@ -85,20 +88,9 @@ export class AuthService {
   }
 
   private clearAuthState(): void {
-    // Clear localStorage
     localStorage.removeItem('currentUser');
-    
-    // Clear all cookies
-    document.cookie.split(';').forEach(cookie => {
-      const [name] = cookie.split('=');
-      document.cookie = `${name.trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-    });
-
-    // Reset authentication state
     this.isAuthenticatedSubject.next(false);
     this.userSubject.next(null);
-    
-    // Navigate to login
     this.router.navigate(['/login']);
   }
 
