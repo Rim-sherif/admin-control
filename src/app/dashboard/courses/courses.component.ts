@@ -59,7 +59,7 @@ export class CoursesComponent implements OnInit {
   ngOnInit(): void {
     this.http
       .get<any>(
-        'http://localhost:5000/api/v1/course/all&sort=purchaseCount:desc'
+        'http://localhost:5000/api/v1/course/all?page=1&size=23&sort=purchaseCount:desc'
       )
       .subscribe(
         (data) => {
